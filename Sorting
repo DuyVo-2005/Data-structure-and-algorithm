@@ -1,4 +1,4 @@
-#Selection sort
+# Selection sort
 #include<iostream>
 using namespace std;
 #define endl '\n'
