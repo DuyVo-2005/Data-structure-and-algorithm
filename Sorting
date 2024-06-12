@@ -1,0 +1,21 @@
+#Selection sort
+#include<iostream>
+using namespace std;
+#define endl '\n'
+#include<algorithm>
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	int i, j, jmin, n=5;
+	int a[]={3,2,1,5,4};
+	for(i=0;i<n-1;i++){
+		jmin=i;
+		for(j=i+1;j<=n-1;j++)
+			if(a[j]<a[jmin])	jmin=j;
+		if(jmin!=i)
+			swap(a[i],a[jmin]);
+	}
+	for(int i=0;i<n;i++)	cout<<a[i]<<" ";
+	return 0;
+}
