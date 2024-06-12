@@ -62,3 +62,30 @@ int main(int argc, char *argv[])
 	for(int i=0;i<n;i++)	cout<<k[i]<<" ";
 	return 0;
 }
+renovate: use binary search
+#include<iostream>
+using namespace std;
+#define endl '\n'
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	int i, j, n=5, tmp, sup, inf, median;
+	int k[]={3,2,1,5,4};
+	for(i=1;i<=n-1;i++)
+	{
+		tmp=k[i];
+		sup=i-1;
+		inf=0;
+		while(inf<=sup){
+			median=(inf+sup)/2;
+			if(k[median]>tmp) sup=median-1;
+			else	inf=median+1;
+		}
+		for(int idx=i-1;idx>=inf;idx--)
+			k[idx+1]=k[idx];
+		k[inf]=tmp;
+	}
+	for(int i=0;i<n;i++)	cout<<k[i]<<" ";
+	return 0;
+}
