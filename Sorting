@@ -89,3 +89,43 @@ int main(int argc, char *argv[])
 	for(int i=0;i<n;i++)	cout<<k[i]<<" ";
 	return 0;
 }
+
+## shellsort
+
+#include<iostream>
+using namespace std;
+#define endl '\n'
+const int MAX=2e5;
+int k[MAX], n;
+void enterArray(){
+	cin>>n;
+	for(int i=1;i<=n;i++)	cin>>k[i];
+}
+void displayArray(){
+	for(int i=1;i<=n;i++)	cout<<k[i]<<" ";
+}
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	int i, j, h, tmp;
+	enterArray();
+	h=n/2;// length of h step
+	while(h!=0){
+		for(i=h+1;i<=n;i++)//inserting sort on child array a[i-h], a[i], a[i+h], a[i+2h],...
+		{
+			tmp=k[i];	j=i-h;
+			while(j>0&&k[j]>tmp){
+				k[j+h]=k[j];	j=j-h;
+			}
+			k[j+h]=tmp;
+		}
+		h=h/2;
+	}
+	displayArray();
+	return 0;
+}
+/*
+6
+5 3 2 6 4 1
+*/
