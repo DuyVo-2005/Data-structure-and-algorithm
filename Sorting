@@ -226,3 +226,80 @@ int main(int argc, char *argv[])
 4 5 2 1 3
 1
 Time complexity: O(n)*/
+//renovate: the mysteriousness of number 5
+#include<iostream>
+using namespace std;
+#define endl '\n'
+#include<vector>
+vector<int>k;
+void InsertionSort(int inf, int sup, int n){
+	int i, tmp, median;
+	for(i=1;i<=n-1;i++)
+	{
+		tmp=k[i];
+		sup=i-1;
+		inf=0;
+		while(inf<=sup){
+			median=(inf+sup)/2;
+			if(k[median]>tmp) sup=median-1;
+			else	inf=median+1;
+		}
+		for(int idx=i-1;idx>=inf;idx--)
+			k[idx+1]=k[idx];
+		k[inf]=tmp;
+	}
+}
+int Select(int L, int H, int p){
+	if(H-L<49){
+		InsertionSort(L,H,H-L+1);
+		return k[L+p];//c++ array[0,n-1]
+	}
+	int i=L, j=L-1;
+	while(!(i+5>H)){
+		//find median of k[i,i+4] move to the beginning of the array
+		InsertionSort(i,i+4,(i+4)-i+1);
+		j++;
+		swap(k[i+2],k[j]);
+		i+=5;
+	}
+	int Pivot=Select(L,j,(j-L+1)/2);
+	int cL=0, cE=0;//count the number of elements lower than and equal to pivot
+	for(i=L;i<=H;i++)
+		if(k[i]<Pivot)	cL++;
+		else	if(k[i]==Pivot)	cE++;
+	if(cL<p&&p<=cL+cE)// pivot equals to the value to find
+		return Pivot;
+	j=L-1;
+	if(p<=cL){//Move keys smaller than the Pivot to the beginning of the array
+		for(i=L;i<=H;i++)
+			if(k[i]<Pivot){
+				j++;
+				swap(k[i],k[j]);
+			}
+		return Select(L,j,p);
+	}
+	else
+	{
+		//Move keys larger than the Pivot to the beginning of the paragraph
+		for(i=L;i<=H;i++)
+			if(k[i]>Pivot)
+			{
+				j++;
+				swap(k[i],k[j]);
+			}
+		return Select(L,j,p-cL-cE);
+	}
+	//O(n)=T(n)=n
+}
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	int p;
+	for(int i=51;i>=0;i--)	k.push_back(i);// array 51 50 49 48 47 46 ....8 7 6 5 4 3 2 1 0
+	cin>>p;
+	cout<<Select(0,k.size()-1,p);
+	return 0;
+}
+
+##heapsort
