@@ -1,0 +1,87 @@
+/*#include<iostream>
+using namespace std;
+#define endl '\n'
+const int Max=101;
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	int F[Max][Max], n;
+	cin>>n;
+	for(int i=0;i<n;i++)	F[0][i]=0;
+	F[0][0]=1;// 0=0 is 1 way
+	//F[m][v] is the numbers of ways creating sum of interger smaller than or equal to m
+	for(int m=1;m<=n;m++)
+		for(int v=0;v<=n;v++)
+			if(m>v)	F[m][v]=F[m-1][v];
+			else	F[m][v]=F[m-1][v]+F[m][v-m];
+	cout<<F[n][n];
+	return 0;
+}*/
+/*#include<iostream>
+using namespace std;
+#define endl '\n'
+#include<vector>
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	int  n;
+	cin>>n;
+	vector<int>current(n+1,0), next(n+1,0);
+	for(int i=0;i<=n;i++)	current[i]=0;
+	current[0]=1;// 0=0 is 1 way
+	//F[m][v] is the numbers of ways analysizing v into sum of interger smaller than or equal to m
+	for(int m=1;m<=n;m++){
+		for(int v=0;v<=n;v++)
+			if(m>v)	next[v]=current[v];
+			else	next[v]=current[v]+next[v-m];
+		current=next;
+	}
+	cout<<next[n];
+	return 0;
+}
+*/
+/*#include<iostream>
+using namespace std;
+#define endl '\n'
+const int Max=101;
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	int n, F[2][Max];
+	cin>>n;
+	//F[1][i] saves values of current array, F[2][i] saves values of next array
+	for(int i=0;i<=n;i++)	F[0][i]=0;
+	F[0][0]=1;
+	int x=0, y=1;// x is current array, y is next array
+	for(int m=1;m<=n;m++){
+		for(int v=0;v<=n;v++)
+			if(m>v)	F[y][v]=F[x][v];
+			else	F[y][v]=F[x][v]+F[y][v-m];
+		x=1-x;	y=1-y;//reverse array x, y
+	}
+	cout<<F[x][n];
+	return 0;
+}
+*/
+//renovate second
+#include<iostream>
+using namespace std;
+#define endl '\n'
+const int Max = 101;
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	int n, F[Max];
+	cin>>n;
+	for(int i=0;i<=n;i++)	F[i]=0;
+	F[0]=1;
+	for(int m=1;m<=n;m++)
+		for(int v=m;v<=n;v++)
+			F[v]=F[v]+F[v-m];
+	cout<<F[n];
+	return 0;
+}
