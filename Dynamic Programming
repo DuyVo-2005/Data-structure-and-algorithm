@@ -1,3 +1,4 @@
+//analyse n into integer numbers has sum equal to n
 /*#include<iostream>
 using namespace std;
 #define endl '\n'
@@ -134,3 +135,78 @@ int main(int argc, char *argv[])
 	cout<<getF(n,n);
 	return 0;
 }
+
+//longest increasing subsequence
+/*#include<iostream>
+using namespace std;
+#define endl '\n'
+const int inf=1e9;
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	int a[101], n, L[101], T[101];
+	cin>>n;
+	for(int i=1;i<=n;i++)	cin>>a[i];
+	a[0]=-inf, a[n+1]=inf;
+	L[n+1]=1;
+	for(int i=n;i>=0;i--){
+		int jmax=i;
+		for(int j=i+1;j<=n+1;j++)	if(a[j]>a[i]&&L[j]>L[jmax])	jmax=j;
+		L[i]=L[jmax]+1;
+		T[i]=jmax;
+	}
+	cout<<L[0]-2;//subtract -inf and inf
+	int i=T[0];
+	while(i!=n+1){
+		cout<<"\na["<<i<<"]="<<a[i];
+		i=T[i];
+	}
+	return 0;
+}*/
+#include<iostream>
+using namespace std;
+#define endl '\n'
+const int infinitive=1e9;
+int a[101], n, m, L[101], T[101], StartOf[101];
+//Hàm Find, tìm vị trí j mà nếu đem ai ghép vào đầu dãy con đơn điệu tăng dài nhất bắt đầu từ aj sẽ được dãy đơn điệu tăng dài nhất bắt đầu tại ai
+int Find(int i){
+	int inf=1, sup=m+1, median, j;
+	while(!(inf+1==sup)){
+		median=(inf+sup)/2;
+		j=StartOf[median];
+		if(a[j]>a[i])	inf=median;//Luôn để aStartOf[inf] > ai ≥ aStartOf[sup]
+		else	sup=median;
+	}
+	return StartOf[inf];
+}
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	cin>>n;
+	for(int i=1;i<=n;i++)	cin>>a[i];
+	a[0]=-infinitive, a[n+1]=infinitive;
+	L[n+1]=1;
+	//StartOf[k] là chỉ số x của phần tử a[x] thoả: dãy đơn điệu tăng dài nhất bắt đầu từ x có độ dài k
+	StartOf[1]=n+1;//i=n+1
+	m=1;//độ dài dãy con đơn điệu tăng dài nhất của dãy a[i...n+1] (i=n+1)
+	int k, j;
+	for(int i=n;i>=0;i--){
+		j=Find(i);	k=L[j]+1;
+		if(k>m){
+			m=k;	StartOf[k]=i;
+		}
+		else	if(a[StartOf[k]]<a[i])	StartOf[k]=i;
+		L[i]=k;
+		T[i]=j;
+	}
+	cout<<L[0]-2;//subtract -inf and inf
+	int i=T[0];
+	while(i!=n+1){
+		cout<<"\na["<<i<<"]="<<a[i];
+		i=T[i];
+	}
+	return 0;
+}
+//11 1 2 3 8 9 4 5 6 20 9 10
