@@ -304,3 +304,56 @@ QABCDABEFA
 ABCD
 EABD
 */
+
+//SUBSEQUENCES HAVE A SUM THAT IS COMPLETELY DIVIDED BY K
+//Solution1
+#include<iostream>
+using namespace std;
+#define endl '\n'
+#include<algorithm>
+const int maxN=1001, maxK=50, inf=1e9;
+int a[maxN], F[maxN][maxK-1], n, k;
+//f[i, t] là số phần tử tối thiểu phải chọn trong dãy a[1..i] để có tổng chia k dư t.
+int Sub(int x, int y){// calculate x-y(mod k)
+//phép trừ trên các lớp đồng dư mod k. Ví dụ khi k = 7 thì (1-3)%7=5)
+	int tmp=(x-y)%k;
+	if(tmp>=0)	return tmp;
+	return tmp+k;
+}
+void FillChar(){
+	for(int j=0;j<k;j++)	F[0][j]=inf;
+}
+void Optimize(){
+	FillChar();
+	F[0][0]=0;
+	for(int i=1;i<=n;i++)
+		for(int t=0;t<=k-1;t++)	F[i][t]=min(F[i - 1][t], F[i - 1][Sub(t, a[i])] + 1);
+}
+void Result(){
+	int SumAll=0;
+	for(int i=1;i<=n;i++)	SumAll+=a[i];
+	cout<<n-F[n][SumAll%k];
+	//n - số phần tử bỏ đi = số phần tử giữ lại
+	int i=n, t=SumAll%k, Sum=0;
+	for(int i=n;i>=1;i--)
+		if(F[i][t]==F[i-1][t]){//ko bỏ ai, tức chọn ai
+			cout<<"\na["<<i<<"]="<<a[i];
+			Sum+=a[i];
+		}
+		else	t=Sub(t,a[i]);
+	cout<<"\nSum = "<<Sum;
+}
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	cin>>n>>k;
+	for(int i=1;i<=n;i++)	cin>>a[i];
+	Optimize();
+	Result();
+	return 0;
+}
+/*
+10 5 
+1 6 11 5 10 15 20 2 4 9
+*/
