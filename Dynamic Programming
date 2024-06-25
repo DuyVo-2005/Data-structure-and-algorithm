@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
 	//Trace
 	
 	int m=x.length()-1, n=y.length()-1;
-	while(m!=0&&m!=0){
+	while(m!=0||n!=0){
 		if(x[m]==y[n]){
 			m--;	n--;
 		}
