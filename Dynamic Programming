@@ -357,3 +357,115 @@ int main(int argc, char *argv[])
 10 5 
 1 6 11 5 10 15 20 2 4 9
 */
+//2nd way
+/*//Phân các phần tử trong dãy A theo 
+//các lớp đồng dư modul k
+//Lớp i gồm các phần tử chia k dư i
+//Gọi Count[i] là số lượng các phần tử thuộc lớp i
+
+//Với 0 ≤ i, t < k; Gọi f[i, t] là số phần
+//tử nhiều nhất có thể chọn được 
+//trong các lớp 0, 1, 2, …, i để được
+//tổng chia k dư t. Trong trường hợp 
+//có cách chọn, gọi Trace[i, t] là số
+//phần tử được chọn trong lớp i theo 
+//phương án này, trong trường hợp 
+//không có cách chọn, Trace[i, t]
+//được coi là -1
+
+//Ta dễ thấy rằng f[0, 0] = Count[0], 
+//Trace[0, 0] = Count[0], còn Trace[0, i] với i≠0 bằng -1
+
+//Với i ≥ 1; 0 ≤ t < k, Giả sử phương 
+//án chọn ra nhiều phần tử nhất 
+//trong các lớp từ 0 tới i để được 
+//tổng chia k dư t có lấy j phần tử 
+//của lớp i (0 ≤ j ≤ Count[i]), khi đó 
+//nếu bỏ j phần tử này đi, sẽ phải 
+//thu được phương án chọn ra nhiều 
+//phần tử nhất trong các lớp từ 0 tới 
+//i - 1 để được tổng chia k dư Sub(t-i*j)
+
+//Từ đó suy ra công thức truy hồi:
+//f[i, t]=max (f[i-1, Sub(t,j*i)]+j)
+//Trace[i, t]=arg max (f[i-1, Sub(t,j*i)]+j)
+//0 <= j <=Count[i]
+//Trace[i-1,Sub(t,j.i)] != -1*/
+#include<iostream>
+using namespace std;
+#define endl '\n'
+const int MaxN=1001, MaxK=50;
+int a[MaxN], Count[MaxK], f[MaxK][MaxK], Trace[MaxK][MaxK], n, k;
+void FillChar(int a[], int na){
+	for(int i=0;i<=na;i++)	a[i]=0;
+}
+void Enter(){
+	int i;
+	cin>>n>>k;
+	FillChar(Count,k-1);
+	for(i=1;i<=n;i++){
+		cin>>a[i];
+		Count[a[i]%k]++;
+	}
+}
+int Sub(int x, int y){
+	int temp=(x-y)%k;
+	if(temp>=0)	return temp;
+	return temp+k;
+}
+void FillCharMatrix(int f[][MaxK], int nf, int value){
+	for(int i=0;i<=nf;i++)
+		for(int j=0;j<=nf;j++)	f[i][j]=value;
+}
+void Optimize(){
+	int i, j, t;
+	FillCharMatrix(f,k-1,0);
+	f[0][0]=Count[0];
+	FillCharMatrix(Trace,k-1,-1);
+	Trace[0][0]=Count[0];
+	for(i=1;i<=k-1;i++)
+		for(t=0;t<=k-1;t++)
+			for(j=0;j<=Count[i];j++)
+				if((Trace[i-1][Sub(t,i*j)]!=-1)&&(f[i][t]<f[i-1][Sub(t,i*j)]+j)){
+					f[i][t]=f[i-1][Sub(t,i*j)]+j;
+					Trace[i][t]=j;
+				}
+}
+void Result(){
+	int i, t, j;
+	int Sum=0;
+	t=0;
+	//Tính lại các Count[i] := Số phần tử
+ //phương án tối ưu sẽ chọn trong lớp i
+ 	for(i=k-1;i>=0;i--){
+ 		j=Trace[i][t];
+ 		t=Sub(t,j*i);
+ 		Count[i]=j;
+ 	}
+ 	cout<<f[k-1][0];
+ 	for(i=1;i<=n;i++){
+ 		t=a[i]%k;
+ 		if(Count[t]>0){
+ 			cout<<"\na["<<i<<"]="<<a[i];
+ 			Count[t]--;
+ 			Sum+=a[i];
+ 		}
+ 	}
+ 	cout<<"\nSum = "<<Sum;
+}
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	Enter();
+	Optimize();
+	Result();
+	return 0;
+}
+/*
+10 5 
+1 6 11 5 10 15 20 2 4 9 
+
+5 2
+1 2 3 4 5
+*/
