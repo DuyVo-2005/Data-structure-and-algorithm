@@ -469,3 +469,50 @@ int main(int argc, char *argv[])
 5 2
 1 2 3 4 5
 */
+
+5.
+//Matrix pxq mutiples Matrix q×r
+#include<iostream>
+using namespace std;
+#define endl '\n'
+const int Max=100;
+int c[Max][Max], a[Max][Max], b[Max][Max], p, q ,r;
+void enter(int a[][Max], int p, int q){
+	for(int i=0;i<p;i++)
+		for(int j=0;j<q;j++)	cin>>a[i][j];
+}
+void mul(int a[][Max], int b[][Max]){
+	for(int i=0;i<p;i++)
+		for(int j=0;j<r;j++){
+			c[i][j]=0;
+			for(int k=0;k<q;k++)
+				c[i][j]=c[i][j]+a[i][k]*b[k][j];
+		}
+}
+void result(int a[][Max], int p, int q){
+	cout<<"\n";
+	for(int i=0;i<p;i++){
+		for(int j=0;j<q;j++)	cout<<a[i][j]<<" ";
+		cout<<"\n";
+	}
+}
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	cin>>p>>q>>r;
+	enter(a,p,q);
+	enter(b,q,r);
+	mul(a,b);
+	result(c,p,r);
+	return 0;
+}
+/*
+2 3 2
+1 2 1
+1 1 1
+1 1
+2 2
+1 1
+*/
+//O(pqr)
