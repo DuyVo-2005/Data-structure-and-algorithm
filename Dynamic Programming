@@ -516,3 +516,65 @@ int main(int argc, char *argv[])
 1 1
 */
 //O(pqr)
+//NHÂN TỐI ƯU DÃY MA TRẬN CÓ
+//SỐ PHÉP NHÂN ÍT NHẤT
+//MATRIX MUTIPLICATIONS
+//Gọi f[i, j] là số phép nhân số học tối thiểu cần thực hiện để nhân đoạn ma trận liên tiếp
+#include<iostream>
+using namespace std;
+#define endl '\n'
+const int Max=101, MaxLong= 1e9+1;
+int a[Max+1], f[Max][Max], t[Max][Max], n;
+void Enter(){
+	cin>>n;
+	for(int i=1;i<=n+1;i++)	cin>>a[i];
+}
+void Optimize(){
+	int i, j, k, len, x, p, q, r;
+	for(i=1;i<=n;i++)
+		for(j=i;j<=n;j++)
+			if(i==j)	f[i][j]=0;
+			else f[i][j]=MaxLong;
+	for(len=2;len<=n;len++)//Thử với độ dài đoạn từ 2 đến n
+		for(i=1;i<=n-len+1;i++){//tính các f[i, i+len-1]
+			j=i+len-1;
+			for(k=i;k<=j-1;k++){//Thử các vị trí phân hoạch k
+				p=a[i], q=a[k+1], r=a[j+1];
+				x=f[i][k]+f[k+1][j]+p*q*r;
+				if(x<f[i][j]){//tối ưu hoá f[i][j]
+					f[i][j]=x;	t[i][j]=k;
+				}
+			}
+		}
+}
+void Trace(int i, int j){
+	//Truy vết bằng đệ quy, thủ tục này in ra cách kết hợp tối ưu tính m[i]…m[j]
+	int k;
+	if(i==j)	cout<<"m["<<i<<"]";
+	else{
+		cout<<"(";
+		k=t[i][j];
+		Trace(i,k);
+		cout<<".";
+		Trace(k+1,j);
+		cout<<")";
+	}
+}
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	Enter();
+	Optimize();
+	cout<<"Number of numerical muplitications: "<<f[1][n]<<"\n";
+	Trace(1,n);
+	return 0;
+}
+/*
+Input:
+6
+3 2 3 1 2 2 3
+Output:
+Number of numerical muplitications: 31
+((m[1].(m[2].m[3])).((m[4].m[5]).m[6]))
+*/
