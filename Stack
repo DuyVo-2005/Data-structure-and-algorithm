@@ -1,1 +1,36 @@
-
+Last In First Out
+#include<iostream>
+using namespace std;
+#define endl '\n'
+const int Max=10000;
+int Top, Stack[Max];
+void InitStack(){
+	Top=0;
+}
+void Push(int V){
+	if(Top==Max)	cout<<"Stack is full";
+	else{
+		Top++;	Stack[Top]=V;
+	}
+}
+void Pop(){
+	if(Top==0)	cout<<"Stack is empty";
+	else{
+		Stack[Top]=0;//free
+		Top--;
+	}
+}
+void print(int a[], int n){
+	for(int i=1;i<=n;i++)	cout<<a[i]<<" ";
+	cout<<"\n";
+}
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	InitStack();
+	Push(1);
+	Pop();
+	print(Stack,Top);
+	return 0;
+}
