@@ -1,0 +1,38 @@
+First In First Out (FIFO)
+#include<iostream>
+using namespace std;
+#define endl '\n'
+const int Max=10000;
+int Queue[Max], Front, Rear;
+void InitQueue(){
+	Front=1;
+	Rear=0;
+}
+void Push(int V){
+	if(Rear==Max)	cout<<"Queue is full";
+	else{
+		Rear++;
+		Queue[Rear]=V;
+	}
+}
+void Pop(){
+	if(Rear==0)	cout<<"Queue is empty";
+	else{
+		Front++;
+	}
+}
+void PrintQueue(int q[], int Front, int Rear){
+	for(int i=Front;i<=Rear;i++)	cout<<q[i]<<" ";
+	cout<<"\n";
+}
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+	InitQueue();
+	Push(5);
+	Push(8);
+	Pop();
+	PrintQueue(Queue,Front,Rear);
+	return 0;
+}
