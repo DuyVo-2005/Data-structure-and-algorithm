@@ -37,8 +37,7 @@ int main()
     }
     for(i=0;i<n;i++)    cout<<a[i]<<"\t";
 }
-//hcmute giao trinh cau truc du lieu va giai r
-thuat
+//hcmute giao trinh cau truc du lieu va giai thuat
 #include<iostream>
 using namespace std;
 #define endl '\n'
