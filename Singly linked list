@@ -1,0 +1,181 @@
+#include <iostream>
+using namespace std;
+#define endl '\n'
+#define Data int
+#define Max 100
+struct NODE
+{
+	Data Inf;
+	struct NODE *Next;
+};
+struct SINGLYLINKEDLIST
+{
+	NODE *Head;
+	NODE *Tail;
+};
+void InitList(SINGLYLINKEDLIST &myList)
+{
+	myList.Head = myList.Tail = NULL;
+}
+bool IsEmptyList(SINGLYLINKEDLIST myList)
+{
+	if (myList.Head == NULL) //or MyList.Tail==NULL
+		return true;
+	return false;
+}
+NODE *CreateNode(int x)
+{
+	NODE *p = new NODE;
+	if (p == NULL)
+	{
+		cout << "\nKhong du bo nho";
+		return NULL;
+	}
+	p->Inf = x;
+	p->Next = NULL;
+	return p;
+}
+void AddFirst(SINGLYLINKEDLIST &myList, NODE *p)
+{
+	if (IsEmptyList(myList))
+		myList.Head = myList.Tail = p;
+	else
+	{
+		p->Next = myList.Head;
+		myList.Head = p;
+	}
+}
+void AddLast(SINGLYLINKEDLIST &myList, NODE *p)
+{
+	if (IsEmptyList(myList))
+		myList.Head = myList.Tail = p;
+	else
+	{
+		myList.Tail->Next = p;
+		myList.Tail = p;
+	}
+}
+void AddNode(SINGLYLINKEDLIST &myList, NODE *q, NODE *p)
+{
+	//add p behind q
+	p->Next = q->Next;
+	q->Next = p;
+	if (myList.Tail == q)
+		myList.Tail = p;
+}
+void RemoveFirst(SINGLYLINKEDLIST &myList)
+{
+	NODE *p = myList.Head;
+	if (IsEmptyList(myList))
+		cout << "\nDanh sach rong";
+	else
+	{
+		if (myList.Head == myList.Tail)
+			myList.Head = myList.Tail = NULL;
+		else
+		{
+			myList.Head = myList.Head->Next;
+			delete p;
+		}
+	}
+}
+void RemoveLast(SINGLYLINKEDLIST &myList)
+{
+	if (IsEmptyList(myList))
+		cout << "\nList is empty";
+	else
+	{
+		if (myList.Head == myList.Tail)
+			myList.Head = myList.Tail = NULL;
+		else
+		{
+			NODE *q = myList.Tail, *p;
+			for (p = myList.Head; p->Next != myList.Tail; p = p->Next)
+				p->Next = NULL;
+			myList.Tail = p;
+			delete q;
+		}
+	}
+}
+void RemoveNodeAfterNode(SINGLYLINKEDLIST &myList, NODE *q)
+{
+	NODE *p = q->Next;
+	if (p == NULL)
+		cout << "\nNot exist element after node q";
+	else
+	{
+		q->Next = p->Next;
+		if (p == myList.Tail)
+			myList.Tail = q;
+		delete p;
+	}
+}
+bool SearchNode(SINGLYLINKEDLIST myList, int x)
+{
+	NODE *p = myList.Head;
+	while (p != NULL)
+	{
+		if (p->Inf == x)
+			return true;
+		p = p->Next;
+	}
+	return false;
+}
+void QuickSort(SINGLYLINKEDLIST &myList){
+	//List have no or one node
+	if(myList.Head==myList.Tail)	return;
+	
+	SINGLYLINKEDLIST myList1, myList2;
+	NODE *pivot, *p;
+	InitList(myList1);
+	InitList(myList2);
+	pivot=myList.Head;
+	for(p=myList.Head->Next;p!=NULL;){
+		NODE *q=p;
+		p=p->Next;//Note: để tránh làm biến đổi cả vị trí p và q
+		q->Next=NULL;//Note
+		if(q->Inf<pivot->Inf)
+			AddLast(myList1,q);
+		else
+			AddLast(myList2,q);
+	}
+	QuickSort(myList1);
+	QuickSort(myList2);
+	//link myList1 + pivot
+	if(!IsEmptyList(myList1)){
+		myList.Head=myList1.Head;
+		myList1.Tail->Next=pivot;
+	}
+	else
+		myList.Head=pivot;
+	//link pivot + myList2
+	pivot->Next=myList2.Head;
+	if(!IsEmptyList(myList2)){
+		myList.Tail=myList2.Tail;
+	}
+	else
+		myList.Tail=pivot;
+}
+void PrintList(SINGLYLINKEDLIST myList)
+{
+	for (NODE *p = myList.Head; p != NULL; p = p->Next)
+		cout << "\n"
+			 << p->Inf;
+}
+int main(int argc, char *argv[])
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+	NODE *a = CreateNode(9), *b = CreateNode(6), *c = CreateNode(3), *d = CreateNode(1), *e = CreateNode(0);
+	SINGLYLINKEDLIST myList;
+	InitList(myList);
+	AddLast(myList, a);
+	AddLast(myList, b);
+	AddLast(myList, c);
+	AddLast(myList, d);
+	AddLast(myList, e);
+	QuickSort(myList);
+	PrintList(myList);
+	return 0;
+}
