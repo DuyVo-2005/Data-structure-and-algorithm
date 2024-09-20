@@ -1,0 +1,206 @@
+#include<iostream>
+using namespace std;
+#define data int
+struct NODE{
+	data info;
+	struct NODE *next;
+};
+struct LIST{
+	NODE *head;
+	NODE *tail;
+};
+void initList(LIST &l){
+	l.head = l.tail = NULL;
+}
+NODE *createNode(data x){
+	NODE *p;
+	p=new NODE;
+	if(p==NULL)	exit(0);
+	p->info=x;
+	p->next=NULL;
+	return p;
+}
+bool isEmpty(LIST l){
+	if(l.head==NULL)	return true;
+	return false;
+}
+void addFirst(LIST &l, NODE *p){
+	if(isEmpty(l))
+		l.head=l.tail=p;
+	else{
+		p->next=l.head;
+		l.head=p;
+	}	
+}
+void addLast(LIST &l, NODE *p){
+	if(isEmpty(l))
+		l.head=l.tail=p;
+	else{
+		l.tail->next=p;
+		l.tail=p;
+	}
+}
+void add_p_After_q(LIST &l, NODE *p, NODE *q){
+	if(q!=NULL){
+		if(q==l.tail){
+			l.tail->next=p;
+			l.tail=p;
+		}
+		else{
+			p->next=q->next;
+			q->next=p;
+		}
+	}
+	else
+		addFirst(l,p);
+}
+void removeFirst(LIST &l){
+	if(isEmpty(l))
+		cout<<"Khong huy duoc do danh sach rong! ";
+	else{
+		if(l.head==l.tail)
+			l.head=l.tail=NULL;
+		else{
+			NODE *p=l.head;
+			l.head=l.head->next;
+			delete p;
+		}
+	}
+}
+void removeAfter_q(LIST &l, NODE *q){
+	if(q!=NULL){
+		NODE *p=q->next;
+		
+		if(p!=NULL)//q ko la nut cuoi
+			if(p==l.tail)//nut can xoa la nut cuoi
+				l.tail=q;
+			q->next=p->next;
+			delete p;
+	}
+	else{
+		cout<<"\nKhong huy phan tu sau q duoc!";
+	}
+}
+/*void removeValue_x(LIST &l, data x){
+	NODE *p=l.head;
+	if(p->next==NULL&&p->info==x){//list co 1 phan tu
+		removeFirst(l);
+	}
+	else{
+		for(;p->next!=NULL;p=p->next)
+			if(p->next->info==x)
+				break;
+		if(p!=NULL)
+			removeAfter_q(l,p);
+		else
+			cout<<"Khong huy duoc do khong tim thay";
+	}
+}*/
+void removeValue_x(LIST &l, data x){
+	NODE *p=l.head, *q=NULL;//p la phan tu can xoa
+	while(p!=NULL&&p->info!=x){
+		q=p;//q la node truoc p
+		p=p->next;
+	}
+	if(p==NULL)
+		cout<<"Khong huy duoc do khong tim thay";
+	if(q!=NULL)
+		removeAfter_q(l,q);//tim thay
+	else//list co 1 node
+		removeFirst(l);	
+}
+bool searchValue(LIST &l, data x){
+	for(NODE *p=l.head;p!=NULL;p=p->next)
+		if(p->info==x)
+			return true;
+	return false;
+}
+void QuickSort(LIST &l){
+	if(l.head==l.tail) return;// da co thu tu (0-1 node)
+	NODE *p, *x;//x luu gia tri key
+	LIST l1, l2;
+	initList(l1);
+	initList(l2);
+	x=l.head;
+	for(p=l.head->next;p!=NULL;){
+		NODE *q=p;
+		p=p->next;
+		q->next=NULL;//co lap node dang xet
+		if(q->info<=x->info)
+			addLast(l1,q);
+		else
+			addLast(l2,q);
+	}
+	QuickSort(l1);
+	QuickSort(l2);
+	//noi list1 + x +list2 = list
+	if(l1.head!=NULL){
+		l.head=l1.head;
+		l1.tail->next=x;
+	}
+	else
+		l.head=x;
+	x->next=l2.head;//
+	if(l2.head!=NULL){
+		l.tail=l2.tail;
+	}
+	else
+		l.tail=x;
+}
+void InsertValue(LIST &l, NODE *x){
+	//giu nguyen thu tu list
+	QuickSort(l);
+	if(l.head==l.tail&&l.head!=NULL)//0 element
+		addFirst(l,x);
+	else
+		if(l.tail->info<=x->info)
+			addLast(l,x);
+		else
+			for(NODE *p=l.head;p!=NULL;){	
+				if((p->info<=x->info)&&(p->next->info>=x->info)){
+						add_p_After_q(l,x,p);
+						break;
+				}
+				p=p->next;
+			}
+}
+void InterchangeSort(LIST& l) {
+	NODE* p = l.head, *q=NULL;
+	while (p != l.tail) {
+		q=p->next;
+		while (q != NULL) {
+			if (p->info > q->info)
+				swap(p, q);
+			q = q->next;
+		}
+		p = p->next;
+	}
+}
+void printList(LIST &l){
+	for(NODE *p=l.head;p!=NULL;p=p->next)
+		cout<<p->info<<" ";
+	cout<<"\n";
+}
+int main(int argc, char *argv[])
+{
+	LIST l;
+	initList(l);
+	addFirst(l,createNode(21));
+	addLast(l,createNode(12));
+	NODE *a=createNode(45);
+	addLast(l,a);
+	add_p_After_q(l,createNode(39),a);
+	printList(l);
+//	removeFirst(l);
+//	printList(l);
+	//removeAfter_q(l,a);
+	//removeValue_x(l,2);
+	//printList(l);
+	//if(searchValue(l,9))
+		//cout<<"Yes";
+	//QuickSort(l);
+	InsertValue(l,createNode(29));
+	InterchangeSort(l);
+	printList(l);
+	return 0;
+}
