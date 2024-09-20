@@ -1,0 +1,232 @@
+#include<iostream>
+using namespace std;
+#define ElementType BOOK
+#include<string.h>
+#define Max 100
+//Sap theo ma so sach
+typedef struct{
+	float id;
+	string name;
+	string type;
+	int pulishedYear;
+}BOOK;
+void BinaryInsertionSort(ElementType a[], int n);
+void BubbleSort(ElementType a[], int n);
+void enterBook(BOOK &a);
+void enterList(BOOK a[], int &n);
+void InsertionSort(ElementType a[], int n);
+void printBook(BOOK a);
+void printList(BOOK a[], int n);
+void QuickSort1(ElementType a[], int n, int left, int right);
+void QuickSort2(ElementType a[], int n, int left, int right);
+void SelectionSort(ElementType a[], int n);
+void ShakerSort(ElementType a[], int n);
+bool SoSanh(BOOK a, BOOK b);
+bool SoSanh(float a, float b);
+
+int main(int argc, char *argv[])
+{
+	BOOK a[Max];
+	int n, tmp;
+	enterList(a,n);
+	cout<<"\nChon kieu sap xep tang dan: "<<"\n1.Selection  sort"<<"\n2.Insertion sort"<<"\n3.Bubble sort"<<"\n4.Sharker"<<"\n5.Quick sort 1"<<"\n6.Binary insertion sort"<<"\n7.Quick sort 2"<<"\nMoi nhap so (1->7): ";
+	cin>>tmp;
+	switch(tmp){
+		case 1:{
+			SelectionSort(a,n);
+			break;
+		}
+		case 2:{
+			InsertionSort(a,n);
+			break;
+		}
+		case 3:{
+			BubbleSort(a,n);
+			break;
+		}
+		case 4:{
+			ShakerSort(a,n);
+			break;
+		}
+		case 5:{
+			QuickSort1(a,n,0,n-1);
+			break;
+		}
+		case 6:{
+			BinaryInsertionSort(a,n);
+			break;
+		}
+		case 7:{
+			QuickSort2(a,n,0,n-1);
+			break;
+		}
+		default:
+			cout<<"\nSo vua nhap khong hop le! Danh sach khong duoc sap xep! "<<"\n";
+	}
+	printList(a,n);
+}
+/*
+4
+23.1
+C++
+Programming
+2020
+23.2
+Python
+Prigramming
+2021
+22.1
+Doraemo 
+Comic
+2015
+22.5
+Shin
+Comic
+2016
+*/
+void BinaryInsertionSort(ElementType a[], int n){
+	ElementType tmp;// tranh lam bien doi gia tri chen khi doi cho
+	for(int i=1;i<n;i++){
+		tmp=a[i];
+		int mid, left=0, right=i-1;
+		while(left<=right){
+			mid=(left+right)/2;
+			if(SoSanh(tmp,a[mid]))
+				right=mid-1;
+			else
+				left=mid+1;
+		}
+		for(int j=i-1;j>=left;j--)
+			a[j+1]=a[j];
+		a[left]=tmp;
+	}
+}
+void BubbleSort(ElementType a[], int n){
+	for(int i=0;i<n-1;i++){
+		for(int j=n-1;j>i;j--){
+			if(SoSanh(a[j],a[j-1]))
+				swap(a[j],a[j-1]);
+		}
+	}
+}
+void enterBook(BOOK &a){
+	cin>>a.id;
+	cin.ignore();
+	getline(cin,a.name);
+	getline(cin,a.type);
+	cin>>a.pulishedYear;
+}
+void enterList(BOOK a[], int &n){
+	cin>>n;
+	for(int i=0;i<n;i++)
+		enterBook(a[i]);
+}
+void InsertionSort(ElementType a[], int n){
+	int pos, i;
+	ElementType tmp;
+	//tmp tranh ghi de khi doi cho
+	for(i=1;i<n;i++)//doan a[0] da xep
+	{
+		tmp=a[i];
+		pos=i-1;
+		while((pos>=0)&&(SoSanh(tmp,a[pos]))){
+			a[pos+1]=a[pos];
+			pos--;
+		}
+		a[pos+1]=tmp;
+	}
+}
+void printBook(BOOK a){
+	cout<<a.id<<" "<<a.name<<" "<<a.type<<" "<<a.pulishedYear<<"\n";
+}
+void printList(BOOK a[], int n){
+	for(int i=0;i<n;i++)
+		printBook(a[i]);
+}
+void QuickSort1(ElementType a[], int n, int left, int right){
+	int i=left, j=right;
+	ElementType x=a[(left+right)/2];
+	while(i<j){
+		while(SoSanh(a[i],x))
+			i++;
+		while(SoSanh(x,a[j]))
+			j--;
+		if(i<=j){
+			swap(a[i],a[j]);
+			i++;
+			j--;
+		}		
+	}
+	if(left<j)
+		QuickSort1(a,n,left,j);
+	if(i<right)
+		QuickSort1(a,n,i,right);
+}
+void QuickSort2(ElementType a[], int n, int left, int right){
+	int i=left, j=right;
+	ElementType x=a[left];
+	while(i<j){
+		while(SoSanh(a[i],x))
+			i++;
+		while(SoSanh(x,a[j]))
+			j--;
+		if(i<=j){
+			swap(a[i],a[j]);
+			i++;
+			j--;
+		}		
+	}
+	if(left<j)
+		QuickSort1(a,n,left,j);
+	if(i<right)
+		QuickSort1(a,n,i,right);
+}
+void SelectionSort(ElementType a[], int n){
+	for(int i=0;i<n-1;i++){
+		int minPos=i;
+		for(int j=i+1;j<n;j++)
+			if(SoSanh(a[j],a[minPos]))
+				minPos=j;
+		if(minPos!=i){
+			ElementType tmp=a[i];
+			a[i]=a[minPos];
+			a[minPos]=tmp;
+		}		
+	}
+}
+void ShakerSort(ElementType a[], int n){
+	//duyet theo 2 chieu: 1 chieu giam dan, 1 chieu tang dan
+	int left=0, right=n-1;
+	int k;// chi so phan tu hoan vi cuoi cung theo 1 chieu dang xet
+	while(left<right){
+		int i=right;
+		while(i>left){
+			if(SoSanh(a[i],a[i-1])){
+				swap(a[i],a[i-1]);
+				k=i;
+			}
+			i--;
+		}
+		left=k;
+		
+		int j=left;
+		while(j<right){
+			if(SoSanh(a[j+1],a[j])){
+				swap(a[j],a[j+1]);
+				k=j;
+			}
+			j++;
+		}
+		right=k;
+	}
+}
+bool SoSanh(BOOK a, BOOK b){
+	if(a.id<b.id)
+		return true;
+	return false;
+}
+bool SoSanh(float a, float b){
+	if(a<b)
+		return true;
+	return false;
+}
