@@ -1,6 +1,7 @@
 #include<iostream>
 using namespace std;
-#define ElementType BOOK
+//#define ElementType BOOK
+#define ElementType int
 #include<string.h>
 #define Max 100
 //Sap theo ma so sach
@@ -12,21 +13,25 @@ typedef struct{
 }BOOK;
 void BinaryInsertionSort(ElementType a[], int n);
 void BubbleSort(ElementType a[], int n);
-void enterBook(BOOK &a);
-void enterList(BOOK a[], int &n);
+void enterElement(BOOK &a);
+void enterElement(int &a);
+void enterList(ElementType a[], int &n);
 void InsertionSort(ElementType a[], int n);
-void printBook(BOOK a);
-void printList(BOOK a[], int n);
+void printElement(int a);
+void printElement(BOOK a);
+void printList(ElementType a[], int n);
+//void printList(int a[])
 void QuickSort1(ElementType a[], int n, int left, int right);
 void QuickSort2(ElementType a[], int n, int left, int right);
 void SelectionSort(ElementType a[], int n);
 void ShakerSort(ElementType a[], int n);
-bool SoSanh(BOOK a, BOOK b);
-bool SoSanh(float a, float b);
+bool IsSmaller(BOOK a, BOOK b);
+bool IsSmaller(int a, int b);
 
 int main(int argc, char *argv[])
 {
-	BOOK a[Max];
+	//BOOK a[Max];
+	int a[Max];
 	int n, tmp;
 	enterList(a,n);
 	cout<<"\nChon kieu sap xep tang dan: "<<"\n1.Selection  sort"<<"\n2.Insertion sort"<<"\n3.Bubble sort"<<"\n4.Sharker"<<"\n5.Quick sort 1"<<"\n6.Binary insertion sort"<<"\n7.Quick sort 2"<<"\nMoi nhap so (1->7): ";
@@ -73,7 +78,7 @@ Programming
 2020
 23.2
 Python
-Prigramming
+Programming
 2021
 22.1
 Doraemo 
@@ -84,14 +89,37 @@ Shin
 Comic
 2016
 */
+/*
+20
+1
+2
+3
+4
+5
+10
+9
+8
+7
+6
+-1
+-2
+-3
+-4
+-5
+-10
+-9
+-8
+-7
+-6
+*/
 void BinaryInsertionSort(ElementType a[], int n){
 	ElementType tmp;// tranh lam bien doi gia tri chen khi doi cho
-	for(int i=1;i<n;i++){
+	for(int i=1;i<n;i++){//gia su a[0] da co thu tu 
 		tmp=a[i];
 		int mid, left=0, right=i-1;
 		while(left<=right){
 			mid=(left+right)/2;
-			if(SoSanh(tmp,a[mid]))
+			if(IsSmaller(tmp,a[mid]))
 				right=mid-1;
 			else
 				left=mid+1;
@@ -102,54 +130,61 @@ void BinaryInsertionSort(ElementType a[], int n){
 	}
 }
 void BubbleSort(ElementType a[], int n){
-	for(int i=0;i<n-1;i++){
-		for(int j=n-1;j>i;j--){
-			if(SoSanh(a[j],a[j-1]))
+	for(int i=0;i<n-1;i++){// i la so lan lap
+		for(int j=n-1;j>i;j--){// j la chi so phan tu dang xet
+			if(IsSmaller(a[j],a[j-1]))
 				swap(a[j],a[j-1]);
 		}
 	}
 }
-void enterBook(BOOK &a){
+void enterElement(BOOK &a){
 	cin>>a.id;
 	cin.ignore();
 	getline(cin,a.name);
 	getline(cin,a.type);
 	cin>>a.pulishedYear;
 }
-void enterList(BOOK a[], int &n){
+void enterElement(int &a){
+	cin>>a;
+}
+void enterList(ElementType a[], int &n){
 	cin>>n;
 	for(int i=0;i<n;i++)
-		enterBook(a[i]);
+		enterElement(a[i]);
 }
 void InsertionSort(ElementType a[], int n){
+	//ap dung cho mang co doan lien truoc da sap xep
 	int pos, i;
 	ElementType tmp;
 	//tmp tranh ghi de khi doi cho
 	for(i=1;i<n;i++)//doan a[0] da xep
 	{
 		tmp=a[i];
-		pos=i-1;
-		while((pos>=0)&&(SoSanh(tmp,a[pos]))){
+		pos=i-1;//xet tu vi tri truoc vi tri dang xet
+		while((pos>=0)&&(IsSmaller(tmp,a[pos]))){
 			a[pos+1]=a[pos];
 			pos--;
 		}
 		a[pos+1]=tmp;
 	}
 }
-void printBook(BOOK a){
+void printElement(int a){
+	cout<<a<<"\n";
+}
+void printElement(BOOK a){
 	cout<<a.id<<" "<<a.name<<" "<<a.type<<" "<<a.pulishedYear<<"\n";
 }
-void printList(BOOK a[], int n){
+void printList(ElementType a[], int n){
 	for(int i=0;i<n;i++)
-		printBook(a[i]);
+		printElement(a[i]);
 }
 void QuickSort1(ElementType a[], int n, int left, int right){
 	int i=left, j=right;
 	ElementType x=a[(left+right)/2];
 	while(i<j){
-		while(SoSanh(a[i],x))
+		while(IsSmaller(a[i],x))
 			i++;
-		while(SoSanh(x,a[j]))
+		while(IsSmaller(x,a[j]))
 			j--;
 		if(i<=j){
 			swap(a[i],a[j]);
@@ -166,9 +201,9 @@ void QuickSort2(ElementType a[], int n, int left, int right){
 	int i=left, j=right;
 	ElementType x=a[left];
 	while(i<j){
-		while(SoSanh(a[i],x))
+		while(IsSmaller(a[i],x))
 			i++;
-		while(SoSanh(x,a[j]))
+		while(IsSmaller(x,a[j]))
 			j--;
 		if(i<=j){
 			swap(a[i],a[j]);
@@ -182,10 +217,11 @@ void QuickSort2(ElementType a[], int n, int left, int right){
 		QuickSort1(a,n,i,right);
 }
 void SelectionSort(ElementType a[], int n){
+	//Chon phan tu nho nhat dua len truoc
 	for(int i=0;i<n-1;i++){
 		int minPos=i;
 		for(int j=i+1;j<n;j++)
-			if(SoSanh(a[j],a[minPos]))
+			if(IsSmaller(a[j],a[minPos]))
 				minPos=j;
 		if(minPos!=i){
 			ElementType tmp=a[i];
@@ -199,9 +235,10 @@ void ShakerSort(ElementType a[], int n){
 	int left=0, right=n-1;
 	int k;// chi so phan tu hoan vi cuoi cung theo 1 chieu dang xet
 	while(left<right){
+		//left == right cung vi tri hoan vi cuoi cung -> dung
 		int i=right;
 		while(i>left){
-			if(SoSanh(a[i],a[i-1])){
+			if(IsSmaller(a[i],a[i-1])){
 				swap(a[i],a[i-1]);
 				k=i;
 			}
@@ -211,7 +248,7 @@ void ShakerSort(ElementType a[], int n){
 		
 		int j=left;
 		while(j<right){
-			if(SoSanh(a[j+1],a[j])){
+			if(IsSmaller(a[j+1],a[j])){
 				swap(a[j],a[j+1]);
 				k=j;
 			}
@@ -220,12 +257,12 @@ void ShakerSort(ElementType a[], int n){
 		right=k;
 	}
 }
-bool SoSanh(BOOK a, BOOK b){
+bool IsSmaller(BOOK a, BOOK b){
 	if(a.id<b.id)
 		return true;
 	return false;
 }
-bool SoSanh(float a, float b){
+bool IsSmaller(int a, int b){
 	if(a<b)
 		return true;
 	return false;
