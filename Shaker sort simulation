@@ -1,0 +1,32 @@
+import matplotlib.pyplot as mpl
+import numpy as np
+def drawGraph(array,index1,index2):
+    mpl.clf()
+    colors = ["green" if i!=index1 and i!=index2 else "yellow" for i in range(len(array))]
+    mpl.bar(range(len(array)),array,color=colors)
+    mpl.title("Shaker sort graph")
+    mpl.pause(0.5)
+def SharkerSort(array):
+    k=-1#luu vi tri hoan vi cuoi cung chieu dang xet
+    left = 0; right = len(array)-1
+    while left < right:
+        j = right
+        while left < j:
+            drawGraph(array,j-1,j)
+            if array[j-1] > array[j]:
+                array[j-1], array[j] = array[j], array[j-1]
+                k = j
+            j -= 1
+        left = k
+        
+        j = left
+        while j < right:
+            drawGraph(array,j,j+1)
+            if array[j] > array[j+1]:
+                array[j], array[j+1] = array[j+1], array[j]
+                k = j
+            j += 1
+        right = k
+array = np.random.randint(1,120,10)
+drawGraph(array,-1,-1)#ve bieu do luc khoi tao
+SharkerSort(array)
