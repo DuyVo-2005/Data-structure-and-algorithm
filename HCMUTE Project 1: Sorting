@@ -1,7 +1,6 @@
 #include<iostream>
 using namespace std;
-//#define ElementType BOOK
-#define ElementType int
+//#define ElementType int
 #include<string.h>
 #define Max 100
 //Sap theo ma so sach
@@ -11,27 +10,32 @@ typedef struct{
 	string type;
 	int pulishedYear;
 }BOOK;
+#define ElementType BOOK
+int count=0;
 void BinaryInsertionSort(ElementType a[], int n);
 void BubbleSort(ElementType a[], int n);
 void enterElement(BOOK &a);
 void enterElement(int &a);
 void enterList(ElementType a[], int &n);
 void InsertionSort(ElementType a[], int n);
+bool IsGreater(BOOK a, BOOK b);
+bool IsEqual(BOOK a, BOOK b);
+bool IsSmaller(BOOK a, BOOK b);
+bool IsGreater(int a, int b);
+bool IsEqual(int a, int b);
+bool IsSmaller(int a, int b);
+ElementType medianOfThree(ElementType a[], int left, int right);
 void printElement(int a);
 void printElement(BOOK a);
 void printList(ElementType a[], int n);
-//void printList(int a[])
 void QuickSort1(ElementType a[], int n, int left, int right);
 void QuickSort2(ElementType a[], int n, int left, int right);
 void SelectionSort(ElementType a[], int n);
 void ShakerSort(ElementType a[], int n);
-bool IsSmaller(BOOK a, BOOK b);
-bool IsSmaller(int a, int b);
-
 int main(int argc, char *argv[])
 {
-	//BOOK a[Max];
-	int a[Max];
+	BOOK a[Max];
+	//int a[Max];
 	int n, tmp;
 	enterList(a,n);
 	cout<<"\nChon kieu sap xep tang dan: "<<"\n1.Selection  sort"<<"\n2.Insertion sort"<<"\n3.Bubble sort"<<"\n4.Sharker"<<"\n5.Quick sort 1"<<"\n6.Binary insertion sort"<<"\n7.Quick sort 2"<<"\nMoi nhap so (1->7): ";
@@ -71,7 +75,7 @@ int main(int argc, char *argv[])
 	printList(a,n);
 }
 /*
-4
+7
 23.1
 C++
 Programming
@@ -81,13 +85,25 @@ Python
 Programming
 2021
 22.1
-Doraemo 
+Doraemon
 Comic
 2015
 22.5
 Shin
 Comic
 2016
+16.8
+Dac Nhan Tam
+Education
+2018
+18.1
+Cam nang huong nghiep sinh vien
+Eduacation
+2019
+15.9
+Personal Best B2
+Eduacation
+2020
 */
 /*
 20
@@ -168,11 +184,48 @@ void InsertionSort(ElementType a[], int n){
 		a[pos+1]=tmp;
 	}
 }
+ElementType medianOfThree(ElementType a[], int left, int right){
+    int mid = left + (right - left) / 2;
+    ElementType b[3] = {a[left], a[mid], a[right]};
+    InsertionSort(b, 3);
+    //tra ve vi tri trung vi cua 3 phan tu: dau, cuoi, giua
+    return b[1] ;
+}
+bool IsGreater(BOOK a, BOOK b){
+	if(a.id>b.id)
+		return true;
+	return false;
+}
+bool IsSmaller(BOOK a, BOOK b){
+	if(a.id<b.id)
+		return true;
+	return false;
+}
+bool IsEqual(BOOK a, BOOK b){
+	if(a.id==b.id)
+		return true;
+	return false;
+}
+bool IsGreater(int a, int b){
+	if(a>b)
+		return true;
+	return false;
+}
+bool IsEqual(int a, int b){
+	if(a==b)
+		return true;
+	return false;
+}
+bool IsSmaller(int a, int b){
+	if(a<b)
+		return true;
+	return false;
+}
 void printElement(int a){
 	cout<<a<<"\n";
 }
 void printElement(BOOK a){
-	cout<<a.id<<" "<<a.name<<" "<<a.type<<" "<<a.pulishedYear<<"\n";
+	cout<<a.id<<" - "<<a.name<<"  - "<<a.type<<" - "<<a.pulishedYear<<"\n";
 }
 void printList(ElementType a[], int n){
 	for(int i=0;i<n;i++)
@@ -196,10 +249,23 @@ void QuickSort1(ElementType a[], int n, int left, int right){
 		QuickSort1(a,n,left,j);
 	if(i<right)
 		QuickSort1(a,n,i,right);
-}
+};
 void QuickSort2(ElementType a[], int n, int left, int right){
+	if(n<=1)
+		return;
+	ElementType median=medianOfThree(a,left,right);
+	int pos = -1;
+	if(IsEqual(a[left],median))
+		pos = left;
+	else{
+		if(IsEqual(a[right],median))
+			pos = right;
+		else
+			pos = (left+right)/2;
+	}
+	swap(a[left],a[pos]);//dua median len dau day
 	int i=left, j=right;
-	ElementType x=a[left];
+	ElementType x=median;//phan tu dau tien day
 	while(i<j){
 		while(IsSmaller(a[i],x))
 			i++;
@@ -212,9 +278,9 @@ void QuickSort2(ElementType a[], int n, int left, int right){
 		}		
 	}
 	if(left<j)
-		QuickSort1(a,n,left,j);
+		QuickSort2(a,n,left,j);
 	if(i<right)
-		QuickSort1(a,n,i,right);
+		QuickSort2(a,n,i,right);
 }
 void SelectionSort(ElementType a[], int n){
 	//Chon phan tu nho nhat dua len truoc
@@ -256,14 +322,4 @@ void ShakerSort(ElementType a[], int n){
 		}
 		right=k;
 	}
-}
-bool IsSmaller(BOOK a, BOOK b){
-	if(a.id<b.id)
-		return true;
-	return false;
-}
-bool IsSmaller(int a, int b){
-	if(a<b)
-		return true;
-	return false;
 }
