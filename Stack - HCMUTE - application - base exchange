@@ -1,0 +1,142 @@
+#include <iostream>
+#include<string.h>
+using namespace std;
+#define ElementType int
+struct Node
+{
+    ElementType Info; //Thông tin của Node
+    Node* pNext; //Con trỏ chỉ đến phần tử node tiếp theo
+};
+typedef struct
+{
+    Node* pTop;
+} STACK;
+Node* CreateNode(ElementType x) {
+    Node* p = new Node;
+    if (p != NULL) {
+        p->Info = x;
+        p->pNext = NULL;
+        return p;
+    }
+    else {
+        cout << "\nBo nho day khong tao duoc!";
+    }
+}
+void InitStack(STACK& name) {
+    name.pTop = NULL;
+}
+void Push(STACK& name, Node* p) {
+    p->pNext = name.pTop;
+    name.pTop = p;
+}
+int IsEmptyStack(STACK name) {
+    if (name.pTop == NULL)
+        return 1;
+    return 0;
+}
+Node* Pop(STACK& name) {
+    if (IsEmptyStack(name) == 1) {
+        cout << "\nStack rong khong huy duoc!";
+    }
+    else {
+        Node* res = CreateNode(name.pTop->Info);
+        Node* p = name.pTop;
+        name.pTop = name.pTop->pNext;
+        delete p;
+        return res;
+    }
+}
+Node* Top(STACK name) {
+    return name.pTop;
+}
+void printStack(STACK name) {
+    //in tu top
+    for (Node* p = name.pTop; p != NULL; p = p->pNext)
+        cout << p->Info << " ";
+    cout << "\n";
+}
+void printNode(Node* p) {
+    cout << p->Info << "\n";
+}
+void DecToBin(int n) {
+    STACK tmp;
+    InitStack(tmp);
+    while (n > 0) {
+        Push(tmp, CreateNode(n % 2));
+        n /= 2;
+    }
+    string res = "";
+    for (Node* p = tmp.pTop; p != NULL; p = p->pNext) {
+        cout<<p->Info;
+    }
+    cout << "\n";
+}
+int BinToDec(int Bin) {
+    STACK tmp;
+    InitStack(tmp);
+    while (Bin > 0) {
+        //Push(tmp, CreateNode(Bin / 10));// sai
+        Push(tmp, CreateNode(Bin % 2));
+        Bin /= 10;
+    }
+    int expo = 0, res = 0;
+    for (Node* p = tmp.pTop; p != NULL; p = p->pNext) {
+        res += pow(2, expo) * p->Info;
+        expo++;
+    }
+    return res;
+}
+string DecToHex(int Dec) {
+    STACK tmp;
+    InitStack(tmp);
+    while (Dec > 0) {
+        Push(tmp, CreateNode(Dec % 16));
+        Dec /= 16;
+    }
+    string res = "";
+    for (Node* p = tmp.pTop; p != NULL; p = p->pNext) {
+        if (p->Info < 10) {
+            res += "0" + p->Info;
+        }
+        else
+            res += (p->Info - 10) + "A";
+    }
+    return res;
+}
+int main()
+{
+    int n;
+    cout << "1. Doi tu thap sang nhi ";
+    cout << "\n2.  Doi tu nhi sang thap ";
+    cout << "\n3.Doi tu thap sang thap luc ";
+    cout << "\n4. Doi tu thap luc sang thap: ";
+    cout << "Nhap thao tac can thuc hien(so nguyen 1-4): ";
+    cin >> n;
+    switch (n)
+    {
+    case 1: {
+            int Dec;
+            cout << "Nhap so he 10: ";
+            cin >> Dec;
+            DecToBin(Dec);
+            break;
+        }
+    case 2: {
+        int Bin;
+        cout << "Nhap so he 2: ";
+        cin >> Bin;
+        cout<<BinToDec(Bin);
+        break;
+    }
+    case 3: {
+        int Dec;
+        cout << "Nhap so he 10: ";//sai
+        cin >> Dec;
+        cout << DecToHex(Dec);
+        break;
+    }
+     default:
+        break;
+    }
+    return 0;
+}
