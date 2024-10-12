@@ -1,0 +1,76 @@
+#include <iostream>
+using namespace std;
+#define ElementType int
+struct Node
+{
+    ElementType Info; //Thông tin của Node
+    Node* pNext; //Con trỏ chỉ đến phần tử node tiếp theo
+};
+typedef struct
+{
+    Node* pTop;
+} STACK;
+Node* CreateNode(ElementType x) {
+    Node* p = new Node;
+    if (p != NULL) {
+        p->Info = x;
+        p->pNext = NULL;
+        return p;
+    }
+    else {
+        cout << "\nBo nho day khong tao duoc!";
+    }
+}
+void InitStack(STACK& name) {
+    name.pTop = NULL;
+}
+void Push(STACK& name, Node* p) {
+    p->pNext = name.pTop;
+    name.pTop = p;
+}
+int IsEmptyStack(STACK name) {
+    if (name.pTop == NULL)
+        return 1;
+    return 0;
+}
+Node* Pop(STACK& name) {
+    if (IsEmptyStack(name) == 1) {
+        cout << "\nStack rong khong huy duoc!";
+    }
+    else {
+        Node* res = CreateNode(name.pTop->Info);
+        Node* p = name.pTop;
+        name.pTop = name.pTop->pNext;
+        delete p;
+        return res;
+    }
+}
+Node* Top(STACK name) {
+    return name.pTop;
+}
+void printStack(STACK name) {
+    //in tu top
+    for (Node* p = name.pTop; p != NULL; p = p->pNext)
+        cout << p->Info << " ";
+    cout << "\n";
+}
+void printNode(Node* p) {
+    cout <<"\n" << p->Info << "\n";
+}
+int main()
+{
+    STACK a;
+    InitStack(a);
+    Node* a1 = CreateNode(1), *a2 =CreateNode(2);
+    Push(a, a1);
+    Push(a, a2);
+    
+    printStack(a);
+    printNode(Top(a));
+
+    STACK b;
+    InitStack(b);
+    if (IsEmptyStack(b) == 1)
+        cout << "\nYes";
+    return 0;
+}
