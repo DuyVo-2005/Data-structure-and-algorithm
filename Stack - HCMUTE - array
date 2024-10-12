@@ -1,0 +1,69 @@
+#include <iostream>
+using namespace std;
+#define ElementType int
+#define MAXLEN 100
+#define NONE -99999999
+struct STACK
+{
+    //stack luu tu 0 den MAXLEN - 1
+    ElementType M[MAXLEN]; //Mảng các phần tử của ngăn xếp
+    int top; //Chỉ số vị trí đầu ngăn xếp - top + 1 = size stack
+};
+void InitStack(STACK& name) {
+    name.top = -1;
+}
+void Push(STACK& name, ElementType value) {
+    if (name.M[0] < MAXLEN) {
+        name.top += 1;
+        name.M[name.top] = value;
+    }
+    else {
+        cout << "\nStack day! Khong push duoc!";
+    }
+}
+ElementType Pop(STACK& name) {
+    if (name.top >= 0) {
+        name.top -= 1;
+        return name.M[name.top + 1];
+    }
+    else {
+        cout << "\nStack rong khong huy duoc!";
+        return NONE;
+    }      
+}
+ElementType Top(STACK name) {
+    if (name.top >= 0) {
+        return name.M[name.top];
+    }
+    else {
+        cout << "\nStack rong khong huy duoc!";
+        return -999999999;
+    }
+}
+int IsEmptyStack(STACK name) {
+    if (name.top == -1)
+        return 1;//dung
+    return 0;
+}
+int IsFullStack(STACK name) {
+    if (name.top + 1 == MAXLEN)
+        return 1;// dung
+    return 0;
+}
+void PrintStack(STACK name) {
+    cout << "Size: " << name.top + 1<<"\n";
+    for (int i = 0; i <= name.top; i++)
+        cout << name.M[i] << " ";
+}
+int main()
+{
+    STACK a;
+    InitStack(a);
+    //cout << a.top;
+    Push(a,1);
+    Push(a, 2);
+    PrintStack(a);
+    Pop(a);
+    PrintStack(a);
+    return 0;
+}
