@@ -1,0 +1,107 @@
+#include <iostream>
+#include<string>
+#include<string.h>
+using namespace std;
+#define ElementType string
+struct Node
+{
+    ElementType Info; //Thông tin của Node
+    Node* pNext; //Con trỏ chỉ đến phần tử node tiếp theo
+};
+typedef struct
+{
+    Node* pTop;
+} STACK;
+Node* CreateNode(ElementType x) {
+    Node* p = new Node;
+    if (p != NULL) {
+        p->Info = x;
+        p->pNext = NULL;
+    }
+    else {
+        cout << "\nBo nho day khong tao duoc!";
+    }
+    return p;
+}
+void InitStack(STACK& name) {
+    name.pTop = NULL;
+}
+void Push(STACK& name, Node* p) {
+    p->pNext = name.pTop;
+    name.pTop = p;
+}
+int IsEmptyStack(STACK name) {
+    if (name.pTop == NULL)
+        return 1;
+    return 0;
+}
+Node* Pop(STACK& name) {
+    if (IsEmptyStack(name) == 1) {
+        cout << "\nStack rong khong huy duoc!";
+    }
+    else {
+        Node* res = CreateNode(name.pTop->Info);
+        Node* p = name.pTop;
+        name.pTop = name.pTop->pNext;
+        delete p;
+        return res;
+    }
+}
+Node* Top(STACK name) {
+    return name.pTop;
+}
+void printStack(STACK name) {
+    //in tu top
+    for (Node* p = name.pTop; p != NULL; p = p->pNext)
+        cout << p->Info << " ";
+    cout << "\n";
+}
+string reverseString(string input) {
+    STACK tmp;
+    InitStack(tmp);
+    int i = 0; 
+    while(i < input.length()) {
+        string tmpString = "";
+        while (input[i] != ' '&&i<input.length()) {// thieu ve sau->lap vo han
+            tmpString += input[i];
+            i++;
+        }
+        if(!input.empty())
+            Push(tmp, CreateNode(tmpString));//tranh dua ky tu rong vao stack
+        i++;
+    }
+    string res = "";
+    while (tmp.pTop != NULL) {
+        res += Pop(tmp)->Info;
+        if (tmp.pTop != NULL)
+            res += ' ';//tranh thua dau cach o cuoi
+    }
+    return res;
+}
+bool IsValid(string input) {
+    if (input[0] == ' ' || input[input.length()-1] == ' ')    return false;
+    for (int i = 0; i <= input.length() - 2; i++)
+        if (input[i] == ' ' && input[i + 1] == ' ')    return false;
+    return true;
+}
+int main()
+{
+    string inputString = "";
+    do {
+        cout << "Nhap 1 chuoi hop le (khong chua dau cach thua o dau, cuoi, giua chuoi): ";
+        getline(cin,inputString);
+    } while (!IsValid(inputString));
+   cout << reverseString(inputString);
+    return 0;
+}
+
+// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
+// Debug program: F5 or Debug > Start Debugging menu
+
+// Tips for Getting Started: 
+//   1. Use the Solution Explorer window to add/manage files
+//   2. Use the Team Explorer window to connect to source control
+//   3. Use the Output window to see build output and other messages
+//   4. Use the Error List window to view errors
+//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
+//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
