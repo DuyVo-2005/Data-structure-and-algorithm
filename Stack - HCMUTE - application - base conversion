@@ -1,5 +1,6 @@
 #include <iostream>
 #include<string.h>
+#include<string>
 using namespace std;
 #define ElementType int
 struct Node
@@ -58,81 +59,84 @@ void printStack(STACK name) {
 void printNode(Node* p) {
     cout << p->Info << "\n";
 }
-void DecToBin(int n) {
-    STACK tmp;
-    InitStack(tmp);
-    while (n > 0) {
-        Push(tmp, CreateNode(n % 2));
-        n /= 2;
-    }
-    string res = "";
-    for (Node* p = tmp.pTop; p != NULL; p = p->pNext) {
-        cout<<p->Info;
-    }
-    cout << "\n";
+char Hex(int n) {
+    if (n >= 10)
+        return 'A' + (n - 10);
+    return '0'+n;
 }
-int BinToDec(int Bin) {
+string DecToOther(int n, int base) {
     STACK tmp;
     InitStack(tmp);
-    while (Bin > 0) {
-        //Push(tmp, CreateNode(Bin / 10));// sai
-        Push(tmp, CreateNode(Bin % 2));
-        Bin /= 10;
+    if (n != 0) {
+        while (n != 0) {
+            Push(tmp, CreateNode(n % base));
+            n /= base;
+        }
+        string res = "";
+        for (Node* p = tmp.pTop; p != NULL; p = p->pNext) {
+            res += Hex(p->Info);
+        }
+        return res;
+    }
+    else
+        return "0";
+}
+int Dec(char n) {
+    if (n >= 'A')
+        return (n - 'A') + 10;
+    return n - '0';
+}
+int OtherToDec(string other, int base) {
+    STACK tmp;
+    InitStack(tmp);
+    int i = 0;
+    while (i < other.length()) {
+        Push(tmp, CreateNode(Dec(other[i])));
+        i++;
     }
     int expo = 0, res = 0;
     for (Node* p = tmp.pTop; p != NULL; p = p->pNext) {
-        res += pow(2, expo) * p->Info;
+        res += pow(base, expo) * p->Info;
         expo++;
-    }
-    return res;
-}
-string DecToHex(int Dec) {
-    STACK tmp;
-    InitStack(tmp);
-    while (Dec > 0) {
-        Push(tmp, CreateNode(Dec % 16));
-        Dec /= 16;
-    }
-    string res = "";
-    for (Node* p = tmp.pTop; p != NULL; p = p->pNext) {
-        if (p->Info < 10) {
-            res += "0" + p->Info;
-        }
-        else
-            res += (p->Info - 10) + "A";
     }
     return res;
 }
 int main()
 {
     int n;
-    cout << "1. Doi tu thap sang nhi ";
-    cout << "\n2.  Doi tu nhi sang thap ";
-    cout << "\n3.Doi tu thap sang thap luc ";
-    cout << "\n4. Doi tu thap luc sang thap: ";
-    cout << "Nhap thao tac can thuc hien(so nguyen 1-4): ";
+    cout << "1. Doi tu thap phan sang nhi phan";
+    cout << "\n2. Doi tu nhi phan sang thap phan";
+    cout << "\n3. Doi tu thap phan sang thap luc phan";
+    cout << "\n4. Doi tu thap luc phan sang thap phan";
+    cout << "\nNhap thao tac can thuc hien(so nguyen 1-4): ";
     cin >> n;
-    switch (n)
-    {
+    switch (n){
     case 1: {
             int Dec;
             cout << "Nhap so he 10: ";
             cin >> Dec;
-            DecToBin(Dec);
+            cout<<DecToOther(Dec,2);
             break;
         }
     case 2: {
-        int Bin;
+        string Bin;
         cout << "Nhap so he 2: ";
         cin >> Bin;
-        cout<<BinToDec(Bin);
+        cout<<OtherToDec(Bin,2);
         break;
     }
     case 3: {
         int Dec;
-        cout << "Nhap so he 10: ";//sai
+        cout << "Nhap so he 10: ";
         cin >> Dec;
-        cout << DecToHex(Dec);
+        cout << DecToOther(Dec,16);
+        break;
+    }
+    case 4: {
+        string Hex;
+        cout << "Nhap so he 16: ";
+        cin >> Hex;
+        cout << OtherToDec(Hex, 16);
         break;
     }
      default:
