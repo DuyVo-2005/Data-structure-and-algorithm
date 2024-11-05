@@ -1,0 +1,254 @@
+// bai1.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+using namespace std;
+#define ElementType int
+#define LH -1 //cay con trai cao hon
+#define EH 0//cay con trai bang cay con phai
+#define RH 1 //cay con phai cao hon
+#include<vector>
+typedef struct tagTNode
+{
+    char balFactor; //chỉ số cân bằng
+    ElementType key;
+    tagTNode* pLeft, * pRight;
+} TNode;
+TNode* CreateNode(ElementType value) {
+    TNode* p = new TNode;
+    if (p == NULL) return NULL;
+    p->key = value;
+    p->pLeft = NULL;
+    p->pRight = NULL;
+    return p;
+}
+vector<TNode*>diaChiCacNutVuaDuyet;
+void InitTree(TNode* &root) {
+    root = NULL;
+}
+int IsEmptyTree(TNode* root) {
+    if (root == NULL) {
+        return 1;
+    }
+    return 0;
+}
+void LL(TNode*& T) {
+    TNode* T1 = T->pLeft;
+    T->pLeft = T1->pRight;
+    T1->pRight = T;
+    switch (T1->balFactor)
+    {
+    case LH: {
+        T->balFactor = EH;
+        T1->balFactor = EH;
+        break;
+    }
+
+    case EH: {
+        T->balFactor = LH;
+        T1->balFactor = RH;
+        break;
+    }
+    }
+    T = T1;
+}
+void LR(TNode*& T)
+{
+    TNode* T1 = T->pLeft;
+    TNode* T2 = T1->pRight;
+    T->pLeft = T2->pRight;
+    T2->pRight = T;
+    T1->pRight = T2->pLeft;
+    T2->pLeft = T1;
+    switch (T2->balFactor)
+    {
+    case LH: T->balFactor = RH;
+
+        T1->balFactor = EH; break;
+
+    case EH: T->balFactor = EH;
+
+        T1->balFactor = EH; break;
+
+    case RH: T->balFactor = EH;
+
+        T1->balFactor = LH; break;
+
+    }T2->balFactor = EH; T = T2;
+}
+void RR(TNode*& T)
+{
+    TNode* T1 = T->pRight;
+    T->pRight = T1->pLeft;
+    T1->pLeft = T;
+    switch (T1->balFactor)
+    {
+    case RH: T->balFactor = EH;
+
+        T->balFactor = EH; break;
+
+    case EH: T->balFactor = RH;
+
+        T1->balFactor = LH; break;
+
+    }
+    T = T1;
+}
+void RL(TNode*& T)
+{
+    TNode* T1 = T->pRight;
+    TNode* T2 = T1->pLeft;
+    T->pRight = T2->pLeft;
+    T2->pLeft = T;
+    T1->pLeft = T2->pRight;
+    T2->pRight = T1;
+    switch (T2->balFactor)
+    {
+    case RH: T->balFactor = LH;
+
+        T1->balFactor = EH; break;
+
+    case EH: T->balFactor = EH;
+
+        T1->balFactor = EH; break;
+
+    case LH: T->balFactor = EH;
+
+        T1->balFactor = RH; break;
+
+    }
+    T2->balFactor = EH; T = T2;
+}
+int HighTree(TNode* root)
+{
+    if (!root) return 0;
+    int hl = HighTree(root->pLeft);
+    int hr = HighTree(root->pRight);
+    if (hl > hr)
+        return (1 + hl);
+    else
+        return (1 + hr);
+}
+void InsertNodeNotBalance(TNode*& root, TNode* node) {
+    if (node == NULL) {
+        cout << "\nNode chen vao la NULL! Khong chen duoc! ";
+        exit(1);
+    }
+    if (root != NULL) {
+        if (root->key == node->key) {
+            return;
+        }
+        if (root->key < node->key) InsertNodeNotBalance(root->pRight, node);
+        else
+        {
+            InsertNodeNotBalance(root->pLeft, node);
+        }
+    }
+    root = new TNode;//duyet den khi den vi tri can chen (pLeft or pRight cua 1 leaf node) 
+    if (root == NULL) {
+        cout << "\nHet bo nho! Khong chen nut moi vao cay duoc!";
+        exit(1);
+    }
+    root->key = node->key;
+    root->pLeft = NULL; root->pRight == NULL;
+}
+//void InsertNode(TNode*& root, TNode* node) {
+//
+//}
+void PrintTree_PreOrder(TNode* root) {
+    if (root != NULL) {
+        cout << "\n" << root->key;
+        PrintTree_PreOrder(root->pLeft);
+        PrintTree_PreOrder(root->pRight);
+    }
+}
+void PrintTree_InOrder(TNode* root) {
+    if (root != NULL) {
+        PrintTree_InOrder(root->pLeft);
+        cout << "\n" << root->key;
+        PrintTree_InOrder(root->pRight);
+    }
+}
+void PrintTree_PostOrder(TNode* root) {
+    if (root != NULL) {
+        PrintTree_PostOrder(root->pLeft);
+        PrintTree_PostOrder(root->pRight);
+        cout << "\n" << root->key;
+    }
+}
+int main()
+{
+    TNode* root;
+    InitTree(root);
+    bool continue_ = true;
+    /*while (continue_) {
+        cout << "\n- - - - - - - - - - - - - - - - - - - -";
+        cout << "\n1. Tao node moi";
+        cout << "\n2. Kiem tra cay rong";
+        cout << "\n3. Them 1 phan tu vao cay";
+        cout << "\n4. Duyet tien tu";
+        cout << "\n10. Thoat";
+        int choice;
+        cout << "\nNhap lua chon (so nguyen): ";
+        cin >> choice;
+        switch (choice)
+        {
+        case 1: {
+            cout << "\nNhap thong tin node can tao! Nhap gia tri: ";        
+            int value;
+            cin >> value;
+            TNode* p = CreateNode(value);
+            cout << "\nGia tri node vua tao: " << p->key;
+            cout << "\nDia chi node vua tao: Node trai: " << p->pLeft << ", Node phai: " << p->pRight;
+            break;
+        }
+        case 2: {
+            if (IsEmptyTree(root) == 1) cout << "\nCay rong!";
+            else
+            {
+                cout << "\nCay khong rong!";
+            }
+            break;
+        }
+        case 3: {
+            cout << "\nNhap thong tin node can them! Nhap gia tri: ";
+            int value;
+            cin >> value;
+            InsertNodeNotBalance(root, CreateNode(value));
+            break;
+        }
+        case 4: {
+            if (IsEmptyTree(root) == 0)    PrintTree_PreOrder(root);
+            else
+            {
+                cout << "\nCay rong khong duyet duoc!";
+            }
+            break;
+        }
+        case 10: {
+            continue_ = false;
+            break;
+        }
+        default:
+            cout << "\nSo vua nhap khong hop le!";
+            break;
+        }
+    }*/
+    InsertNodeNotBalance(root, CreateNode(1));
+    InsertNodeNotBalance(root, CreateNode(5));
+    /*InsertNodeNotBalance(root, CreateNode(0));
+    InsertNodeNotBalance(root, CreateNode(5));*/
+    PrintTree_InOrder(root);
+    return 0;
+}
+
+// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
+// Debug program: F5 or Debug > Start Debugging menu
+
+// Tips for Getting Started: 
+//   1. Use the Solution Explorer window to add/manage files
+//   2. Use the Team Explorer window to connect to source control
+//   3. Use the Output window to see build output and other messages
+//   4. Use the Error List window to view errors
+//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
+//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
