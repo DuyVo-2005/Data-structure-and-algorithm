@@ -8,10 +8,11 @@ using namespace std;
 #define LH -1 //cay con trai cao hon
 #define EH 0//cay con trai bang cay con phai
 #define RH 1 //cay con phai cao hon
-bool taller = true;//(gia su) true khi cay co tang truong chieu cao
+bool taller = false;//(gia su) true khi cay co tang truong chieu cao
+bool shorter = false;//true khi cay giam chieu cao
 typedef struct tagTNode
 {
-    char balFactor; //chỉ số cân bằng
+    int balFactor; //chỉ số cân bằng
     ElementType key;
     tagTNode* pLeft, * pRight;
 } TNode;
@@ -52,9 +53,27 @@ void LL(TNode*& T) {
     }
     T = T1;
 }
+void RR(TNode*& T)
+{
+    TNode* T1 = T->pRight;
+    T->pRight = T1->pLeft;
+    T1->pLeft = T;
+    switch (T1->balFactor)
+    {
+    case RH: T->balFactor = EH;
+
+        T->balFactor = EH; break;
+
+    case EH: T->balFactor = RH;
+
+        T1->balFactor = LH; break;
+
+    }
+    T = T1;
+}
 void LR(TNode*& T)
 {
-    TNode* T1 = T->pLeft;
+    /*TNode* T1 = T->pLeft;
     TNode* T2 = T1->pRight;
     T->pLeft = T2->pRight;
     T2->pRight = T;
@@ -74,29 +93,13 @@ void LR(TNode*& T)
 
         T1->balFactor = LH; break;
 
-    }T2->balFactor = EH; T = T2;
-}
-void RR(TNode*& T)
-{
-    TNode* T1 = T->pRight;
-    T->pRight = T1->pLeft;
-    T1->pLeft = T;
-    switch (T1->balFactor)
-    {
-    case RH: T->balFactor = EH;
-
-        T->balFactor = EH; break;
-
-    case EH: T->balFactor = RH;
-
-        T1->balFactor = LH; break;
-
-    }
-    T = T1;
+    }T2->balFactor = EH; T = T2;*/
+    RR(T->pLeft);//quay trai cay con trai
+    LL(T);//quay phai nut dang xet
 }
 void RL(TNode*& T)
 {
-    TNode* T1 = T->pRight;
+    /*TNode* T1 = T->pRight;
     TNode* T2 = T1->pLeft;
     T->pRight = T2->pLeft;
     T2->pLeft = T;
@@ -117,7 +120,9 @@ void RL(TNode*& T)
         T1->balFactor = RH; break;
 
     }
-    T2->balFactor = EH; T = T2;
+    T2->balFactor = EH; T = T2;*/
+    LL(T->pRight);
+    RR(T);
 }
 int HighTree(TNode* root)
 {
@@ -129,57 +134,134 @@ int HighTree(TNode* root)
     else
         return (1 + hr);
 }
+
 void InsertNode(TNode*& root, TNode* node, bool& taller) {
     if (node == NULL) {
-        cout << "\nNode chen vao la NULL! Khong chen duoc! ";
+        cout << "\nNode truyen vao la NULL! Khong chen duoc!";
         return;
     }
     if (root == NULL) {
         root = node;
-        taller = true;
-        return;//
-    }
-    if (root->key == node->key)
+        root->balFactor = EH;
+        taller = true; // cây tăng chiều cao
         return;
-    if (root->key > node->key) {
+    }
+    if (root->key == node->key) return;
+    if (node->key < root->key) {
         InsertNode(root->pLeft, node, taller);
         if (taller) {
-            if (root->balFactor == LH)
-                if (root->pLeft->balFactor == LH)	LL(root);
-                else	LR(root);
-            taller = false;//cay da can bang->khong can kiem tra chieu cao de xoay
-        }
-        else if (root->balFactor == EH) {
-            root->balFactor = LH;
-            taller = true;
-        }
-        else {
-            root->balFactor = EH;
-            taller = false;
+            if (root->balFactor == LH) { // Cây mất cân bằng trái
+                if (root->pLeft->balFactor == LH) {// cây con trái cũng mất cân bằng trái
+                    LL(root);
+                }
+                else {//cây con trái mất cân bằng phải
+                    LR(root);
+                }
+                taller = false;//cây đã cân bằng sau khi quay
+            }
+            else if (root->balFactor == EH) {
+                root->balFactor = LH;
+                taller = true; // Chiều cao tăng
+            }
+            else { // root->balFactor == RH
+                root->balFactor = EH;
+                taller = false; // Cây cân bằng -> không tăng chiều cao
+            }
         }
     }
-    else {
+    else{
         InsertNode(root->pRight, node, taller);
         if (taller) {
-            if (root->balFactor == RH) {
-                if (root->pRight->balFactor == RH)    RR(root);
-                else	RL(root);
+            if (root->balFactor == RH) { // Cây mất cân bằng phải
+                if (root->pRight->balFactor == RH) {// cây con phải cũng mất cân bằng phải
+                    RR(root);
+                }
+                else {// cây con phải mất cân bằng trái
+                    RL(root);
+                }
                 taller = false;
             }
             else if (root->balFactor == EH) {
                 root->balFactor = RH;
-                taller = RH;
+                taller = true;
             }
-            else {
+            else { // root->balFactor == LH
                 root->balFactor = EH;
                 taller = false;
             }
         }
     }
 }
-//void InsertNode(TNode*& root, TNode* node) {
-//
-//}
+void BalanceAfterDelete(TNode*& root, bool& shorter) {
+    if (root->balFactor == LH) {
+        root->balFactor = EH;
+        shorter = true;
+    }
+    else if (root->balFactor == EH) {
+        root->balFactor = RH;
+        shorter = false;
+    }
+    else { // root->balFactor == RH
+        if (root->pRight->balFactor == RH) {
+            RR(root);
+            shorter = true;
+        }
+        else if (root->pRight->balFactor == EH) {
+            RR(root);
+            root->balFactor = LH;
+            root->pRight->balFactor = RH;
+            shorter = false;
+        }
+        else { // root->pRight->balFactor == LH
+            RL(root);
+            shorter = true;
+        }
+    }
+}
+void ThayThe(TNode*& p, TNode*& T) {
+    if (T->pLeft != NULL)  ThayThe(p, T->pLeft);
+    else
+    {
+        p->key = T->key;
+        p = T;
+        T = T->pRight;
+    }
+}
+void DeleteNode(TNode*& root, ElementType key, bool& shorter) {
+    if (root == NULL) return;
+
+    if (key < root->key) {
+        DeleteNode(root->pLeft, key, shorter);
+        if (shorter) BalanceAfterDelete(root, shorter);
+    }
+    else if (key > root->key) {
+        DeleteNode(root->pRight, key, shorter);
+        if (shorter) BalanceAfterDelete(root, shorter);
+    }
+    else { // Tìm thấy node cần xóa
+        TNode* temp = root;
+        if (root->pLeft == NULL) {
+            root = root->pRight;
+            shorter = true;
+            delete temp;
+        }
+        else if (root->pRight == NULL) {
+            root = root->pLeft;
+            shorter = true;
+            delete temp;
+        }
+        else { // node có cả 2 con
+            /*TNode* successor = root->pRight;
+            while (successor->pLeft != NULL) successor = successor->pLeft;
+            root->key = successor->key;
+            DeleteNode(root->pRight, successor->key, shorter);
+            if (shorter) BalanceAfterDelete(root, shorter);*/
+            ThayThe(temp, root->pRight);
+        }
+    }
+}
+
+
 void PrintTree_PreOrder(TNode* root) {
     if (root != NULL) {
         cout << "\n" << root->key;
@@ -274,10 +356,25 @@ int main()
         }
     }*/
     InsertNode(root, CreateNode(1), taller);
-    InsertNode(root, CreateNode(5), taller);
+    InsertNode(root, CreateNode(5), taller);;
+
     InsertNode(root, CreateNode(0), taller);
+
     InsertNode(root, CreateNode(-5), taller);
+
+    InsertNode(root, CreateNode(11), taller);
+
+    InsertNode(root, CreateNode(15), taller);
+
+    InsertNode(root, CreateNode(10), taller);
+
+    InsertNode(root, CreateNode(-15), taller);
+    PrintTree(root);
+    //DeleteNode(root, 11, taller);
+    DeleteNode(root, 11, shorter);
+    cout << "\n";
     PrintTree_InOrder(root);
+    cout << "\n";
     PrintTree(root);
     return 0;
 }
