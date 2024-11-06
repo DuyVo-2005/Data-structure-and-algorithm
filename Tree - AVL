@@ -8,6 +8,7 @@ using namespace std;
 #define EH 0//cay con trai bang cay con phai
 #define RH 1 //cay con phai cao hon
 #include<vector>
+bool taller = true;//(gia su) true khi cay co tang truong chieu cao
 typedef struct tagTNode
 {
     char balFactor; //chỉ số cân bằng
@@ -129,28 +130,53 @@ int HighTree(TNode* root)
     else
         return (1 + hr);
 }
-void InsertNodeNotBalance(TNode*& root, TNode* node) {
+void InsertNodeNotBalance(TNode*& root, TNode* node, bool &taller) {
     if (node == NULL) {
         cout << "\nNode chen vao la NULL! Khong chen duoc! ";
-        exit(1);
+        return;
     }
-    if (root != NULL) {
-        if (root->key == node->key) {
+    if(root == NULL){
+   	 root = node;
+   	 root->balFactor = EH;
+   	 taller = true;
+   	 return;//
+    }
+     if (root->key == node->key)
             return;
-        }
-        if (root->key < node->key) InsertNodeNotBalance(root->pRight, node);
-        else
-        {
-            InsertNodeNotBalance(root->pLeft, node);
-        }
-    }
-    root = new TNode;//duyet den khi den vi tri can chen (pLeft or pRight cua 1 leaf node) 
-    if (root == NULL) {
-        cout << "\nHet bo nho! Khong chen nut moi vao cay duoc!";
-        exit(1);
-    }
-    root->key = node->key;
-    root->pLeft = NULL; root->pRight == NULL;
+     if (root->key < node->key){ InsertNodeNotBalance(root->pRight, node, taller);
+     	if(taller){
+     		if(root->balFactor == LH)
+     			if(root->pLeft->balFactor == LH)	LL(root);
+     			else	LR(root);
+     			taller = false;//cay da can bang->khong can kiem tra chieu cao de xoay
+     	}
+     	else if(root->balFactor == EH){
+     		root->balFactor = LH;		
+     		taller = true;
+     	}
+     	else{
+     		root->balFactor = EH;
+     		taller = false;
+     	}
+     }
+     else{
+            InsertNodeNotBalance(root->pLeft, node, taller);
+            if(taller){
+            	if(root->balFactor == RH){
+            		if(root->pRight->balFactor == RH)    RR(root);
+            		else	RL(root);
+            		taller = false;
+            	}
+            	else if(root->balFactor == EH){
+            		root->balFactor = RH;
+            		taller = RH;
+            	}
+            	else{
+            		root->balFactor = EH;
+            		taller = false;
+            	}
+            }
+     }
 }
 //void InsertNode(TNode*& root, TNode* node) {
 //
@@ -176,6 +202,26 @@ void PrintTree_PostOrder(TNode* root) {
         cout << "\n" << root->key;
     }
 }
+void PrintTree(TNode *root, int space = 0, int height = 10)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+
+    space += height;
+
+    PrintTree(root->pRight, space);
+
+    cout << endl;
+    for (int i = height; i < space; i++)
+    {
+        cout << " ";
+    }
+    cout << root->key << "(" << root->balFactor << ")" << endl;
+
+    PrintTree(root->pLeft, space);
+}
 int main()
 {
     TNode* root;
@@ -187,6 +233,7 @@ int main()
         cout << "\n2. Kiem tra cay rong";
         cout << "\n3. Them 1 phan tu vao cay";
         cout << "\n4. Duyet tien tu";
+        cout<<"\n5. Duyet trung tu";
         cout << "\n10. Thoat";
         int choice;
         cout << "\nNhap lua chon (so nguyen): ";
@@ -234,11 +281,12 @@ int main()
             break;
         }
     }*/
-    InsertNodeNotBalance(root, CreateNode(1));
-    InsertNodeNotBalance(root, CreateNode(5));
-    /*InsertNodeNotBalance(root, CreateNode(0));
-    InsertNodeNotBalance(root, CreateNode(5));*/
+    InsertNodeNotBalance(root, CreateNode(1), taller);
+    InsertNodeNotBalance(root, CreateNode(5), taller);
+    InsertNodeNotBalance(root, CreateNode(0), taller);
+    InsertNodeNotBalance(root, CreateNode(-5), taller);
     PrintTree_InOrder(root);
+    //PrintTree(root);
     return 0;
 }
 
