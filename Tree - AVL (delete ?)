@@ -207,28 +207,66 @@ void InsertNode(TNode*& root, TNode* node, bool& taller) {
        }
     }
 }
+//void BalanceAfterDelete(TNode*& root, bool& shorter) {
+//    //xoa nut trai nhat ben phai
+//    if (root->balFactor == LH) {
+//        root->balFactor = EH;
+//        shorter = true;
+//    }
+//    else if (root->balFactor == EH) {
+//        root->balFactor = RH;
+//        shorter = false;
+//    }
+//    else { // root->balFactor == RH
+//        if (root->pRight->balFactor == RH) {
+//            RR(root);
+//            shorter = true;
+//        }
+//        else if (root->pRight->balFactor == EH) {
+//            RR(root);
+//            root->balFactor = LH;
+//            root->pRight->balFactor = RH;
+//            shorter = false;
+//        }
+//        else { // root->pRight->balFactor == LH
+//            RL(root);
+//            shorter = true;
+//        }
+//    }
+//}
 void BalanceAfterDelete(TNode*& root, bool& shorter) {
-    //xoa nut trai nhat ben phai
-    if (root->balFactor == LH) {
-        root->balFactor = EH;
-        shorter = true;
+    if (root->balFactor == LH) { // Trái cao hơn
+        if (root->pLeft->balFactor == LH) { // LL Case
+            LL(root);
+            shorter = true;
+        }
+        else if (root->pLeft->balFactor == EH) { // Trái cân bằng trước, sau khi xóa sẽ cân bằng
+            LL(root);
+            root->balFactor = RH; // Điều chỉnh lại cân bằng
+            root->pLeft->balFactor = LH;
+            shorter = false;
+        }
+        else { // root->pLeft->balFactor == RH : LR Case
+            LR(root);
+            shorter = true;
+        }
     }
-    else if (root->balFactor == EH) {
+    else if (root->balFactor == EH) { // Cây đã cân bằng, giảm chiều cao
         root->balFactor = RH;
         shorter = false;
     }
-    else { // root->balFactor == RH
-        if (root->pRight->balFactor == RH) {
+    else { // RH
+        if (root->pRight->balFactor == RH) { // RR Case
             RR(root);
             shorter = true;
         }
-        else if (root->pRight->balFactor == EH) {
+        else if (root->pRight->balFactor == EH) { // Giống bên trên
             RR(root);
             root->balFactor = LH;
             root->pRight->balFactor = RH;
             shorter = false;
         }
-        else { // root->pRight->balFactor == LH
+        else { // RL
             RL(root);
             shorter = true;
         }
