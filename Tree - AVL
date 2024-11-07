@@ -22,6 +22,7 @@ TNode* CreateNode(ElementType value) {
     p->key = value;
     p->pLeft = NULL;
     p->pRight = NULL;
+    p->balFactor = EH;
     return p;
 }
 void InitTree(TNode*& root) {
@@ -142,7 +143,6 @@ void InsertNode(TNode*& root, TNode* node, bool& taller) {
     }
     if (root == NULL) {
         root = node;
-        root->balFactor = EH;
         taller = true; // cây tăng chiều cao
         return;
     }
@@ -260,7 +260,17 @@ void DeleteNode(TNode*& root, ElementType key, bool& shorter) {
         }
     }
 }
-
+TNode* SearchNode(TNode* root, ElementType x) {
+    TNode* p = root;
+    while (p!=NULL)
+    {
+        if (x == p->key) return p;
+        else
+            if (x < p->key) p = p->pLeft;
+            else p = p->pRight;
+    }
+    return NULL;
+}
 
 void PrintTree_PreOrder(TNode* root) {
     if (root != NULL) {
@@ -295,6 +305,69 @@ void PrintTree(TNode* root, int space = 0, int height = 6)
     cout <<setw(space)<< root->key << "(" << root->balFactor << ")" << endl;
 
     PrintTree(root->pLeft, space);
+}
+int CountNode(TNode* root)
+{
+    if (!root) return 0;
+    int nl = CountNode(root->pLeft);
+    int nr = CountNode(root->pRight);
+    return (1 + nl + nr);
+}
+int CountNodeLeaf(TNode* root)
+{
+    if (!root) return 0;
+    if (!root->pLeft && !root->pRight) return 1;
+    int nll = CountNodeLeaf(root->pLeft);
+    int nrl = CountNodeLeaf(root->pRight);
+    return (nll + nrl);
+}
+int CountBranchNode(TNode* root) {
+    return CountNode(root) - CountNodeLeaf(root)-1;//-1 node goc
+}
+int CountEvenElement(TNode* root){
+	if(!root)	return 0;//root = NULL
+	//int countEvenElementInLeftSubtree = 0, countEvenElementInRightSubtree = 0;
+	if(root->key % 2 == 0)
+		return CountEvenElement(root->pRight) + CountEvenElement(root->pLeft) + 1;
+	else
+		return CountEvenElement(root->pRight) + CountEvenElement(root->pLeft);
+}
+int SumNodeKey(TNode* root){
+	if(root == NULL)	return 0;
+	return root->key + SumNodeKey(root->pLeft) + SumNodeKey(root->pRight);
+}
+#define NONE -9999999
+int FindMaxElement(TNode *root){
+	if(root == NULL)	return NONE;
+	TNode* p = root;
+	while(p->pRight!=NULL)	p = p->pRight;
+	return p->key;	
+}
+int FindMinElement(TNode* root){
+	if(root == NULL)	return NONE;
+	TNode *p = root;
+	while(p->pLeft != NULL)	p = p->pLeft;
+	return p->key;
+}
+int FindMaxNegativeElement
+(TNode* root){
+	if(root == NULL)	return NONE;
+	if(root->key < 0){	//return root->key;
+		TNode *p = root;
+		while(p->pRight->key< 0)
+			p = p->pRight;
+		return p->key;
+	}
+	else{
+		//key >= 0
+		TNode*p = root->pLeft;
+		while(p->key >= 0)	p=p->pLeft;
+		if(p != NULL)	return p->key;
+		return NONE;
+	}
+	//if(p != NULL && p->key < 0)
+//		return p->key;
+//	else	return NONE;
 }
 int main()
 {
@@ -355,27 +428,57 @@ int main()
             break;
         }
     }*/
-    InsertNode(root, CreateNode(1), taller);
-    InsertNode(root, CreateNode(5), taller);;
+//    InsertNode(root, CreateNode(1), taller);
+//    InsertNode(root, CreateNode(5), taller);
 
-    InsertNode(root, CreateNode(0), taller);
+//    InsertNode(root, CreateNode(0), taller);
 
-    InsertNode(root, CreateNode(-5), taller);
+//    InsertNode(root, CreateNode(-5), taller);
 
-    InsertNode(root, CreateNode(11), taller);
+//    InsertNode(root, CreateNode(11), taller);
 
-    InsertNode(root, CreateNode(15), taller);
+//    InsertNode(root, CreateNode(15), taller);
 
-    InsertNode(root, CreateNode(10), taller);
+//    InsertNode(root, CreateNode(10), taller);
 
-    InsertNode(root, CreateNode(-15), taller);
+//    InsertNode(root, CreateNode(-15), taller);
+    InsertNode(root, CreateNode(50), taller);
+    //chen trung->bi sai
+    InsertNode(root, CreateNode(50), taller);
+//    InsertNode(root, CreateNode(25), taller);
+//    InsertNode(root, CreateNode(35), taller);
+    //ham chen co van de
+    
     PrintTree(root);
     //DeleteNode(root, 11, taller);
-    DeleteNode(root, 11, shorter);
-    cout << "\n";
-    PrintTree_InOrder(root);
-    cout << "\n";
-    PrintTree(root);
+   // DeleteNode(root, 11, shorter);
+   // cout << "\n";
+//    PrintTree_InOrder(root);
+    //cout << "\n";
+//    PrintTree(root);
+//    int newKey;
+//    cout<<"\nNhap gia tri phan tu can tim: ";
+//    cin>>newKey;
+//    if(SearchNode(root, newKey)!=NULL)
+//    cout<<"\nTim thay gia tri vua nhap!";
+//    else	cout<<"\nKhong tim thay gia tri vua nhap!";
+//	cout<<"\nSo nut nhanh: "<<CountBranchNode(root);
+//	
+//	cout<<"\nSo nut la: "<<CountNodeLeaf(root);
+//	
+//	cout<<"\nSo phan tu chan tren cay: "<<CountEvenElement(root);
+//	
+//	cout<<"\nTong cac gia tri nguyen tren cay: "<<SumNodeKey(root);
+	
+	//int maxValue = FindMaxElement(root), minValue = FindMinElement(root);
+//	if(maxValue != NONE)	cout<<"\nGia tri nguyen lon nhat: "<<maxValue;
+//	else	cout<<"\nKhong co gia tri nguyen lon nhat";
+//	if(minValue != NONE)	cout<<"\nGia tri nguyen be nhat: "<<minValue;
+//	else	cout<<"\nKhong co gia tri nguyen be nhat";
+
+	int maxNegativeElement = FindMaxNegativeElement(root);
+	if(maxNegativeElement != NONE)	cout<<"\nGia tri am lon nhat: "<<maxNegativeElement;
+	else	cout<<"\nKhong co gia tri am lon nhat";
     return 0;
 }
 
