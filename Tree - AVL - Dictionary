@@ -12,10 +12,8 @@ using namespace std;
 #define EH 0//cay con trai bang cay con phai
 #define RH 1 //cay con phai cao hon
 #include<vector>
-ifstream infile;
-infile.open("input.txt");
-ofstream outfile;
-outfile.open("23110196.txt");
+ifstream infile("D:\\input.txt");
+ofstream outfile("D:\\23110196.txt", ios::trunc);//file da ton tai noi dung -> xoa noi dung cu
 bool taller = false;//(gia su) true khi cay co tang truong chieu cao
 bool shorter = false;//true khi cay giam chieu cao
 typedef struct tagTNode
@@ -82,7 +80,7 @@ void RR(TNode*& T)
         T->balFactor = RH;
 
         T1->balFactor = LH; break;
-    }   
+    }
     }
     T = T1;
 }
@@ -208,9 +206,9 @@ void InsertNode(TNode*& root, TNode* node, bool& taller) {
                 }
             }
         }
-       else{
-       	return;
-       }
+        else {
+            return;
+        }
     }
 }
 void BalanceAfterDelete(TNode*& root, bool& shorter) {
@@ -286,7 +284,7 @@ void DeleteNode(TNode*& root, ElementType EnglishMeaning, bool& shorter) {
         else { // node có 2 con 
             ThayThe(temp, root->pRight);//nut trai nhat ben phai
             //if (shorter)
-             BalanceAfterDelete(root, shorter);
+            BalanceAfterDelete(root, shorter);
         }
         delete temp;
     }
@@ -355,36 +353,36 @@ int CountNodeLeaf(TNode* root)
 int CountBranchNode(TNode* root) {
     return CountNode(root) - CountNodeLeaf(root) - 1;//-1 node goc
 }
-void SplitWord(string x, string &EnglishMeaning, string &VietnameseMeaning){
-	int i;
-	EnglishMeaning = "", VietnameseMeaning = "";
-	for(i = 0; i<x.length();i++)
-		if(x[i] != ',')	EnglishMeaning +=x[i];
-		else	break;
-	for(i = i+1; i < x.length();i++)
-		VietnameseMeaning += x[i];	
+void SplitWord(string x, string& EnglishMeaning, string& VietnameseMeaning) {
+    int i;
+    EnglishMeaning = "", VietnameseMeaning = "";
+    for (i = 0; i < x.length(); i++)
+        if (x[i] != ',')	EnglishMeaning += x[i];
+        else	break;
+    for (i = i + 1; i < x.length(); i++)
+        VietnameseMeaning += x[i];
 }
-void Print_InOrder(TNode* root){
-	if(root != NULL){
-		Print_InOrder(root->pLeft);
-		outfile<<"\n"<<root->EnglishMeaning<<", "<<root->VietnameseMeaning<<", ";
-		if(root->pLeft!=NULL)	outfile<<root->pLeft->EnglishMeaning;
-		else	outfile<<"NULL";
-		outfile<<", ";
-		
-		if(root->pRight != NULL)	outfile<<root->pRight->EnglishMeaning;
-		else	outfile<<"NULL";
-		Print_InOrder(root->pRight);
-	}
+void Print_InOrder(TNode* root) {
+    if (root != NULL) {
+        Print_InOrder(root->pLeft);
+        outfile << "\n" << root->EnglishMeaning << ", " << root->VietnameseMeaning << ", ";
+        if (root->pLeft != NULL)	outfile << root->pLeft->EnglishMeaning;
+        else	outfile << "NULL";
+        outfile << ", ";
+
+        if (root->pRight != NULL)	outfile << root->pRight->EnglishMeaning;
+        else	outfile << "NULL";
+        Print_InOrder(root->pRight);
+    }
 }
-void PrintDictionary(TNode *root){
-	outfile<<"goc: ";
-	if(root != NULL){
-		outfile<<"\n{";
-		Print_InOrder(root);
-		outfile<<"\n}";
-	}
-	else	outfile<<"NULL";
+void PrintDictionary(TNode* root) {
+    outfile << "goc: ";
+    if (root != NULL) {
+        outfile << "\n{";
+        Print_InOrder(root);
+        outfile << "\n}";
+    }
+    else	outfile << "NULL";
 }
 int main()
 {
@@ -392,29 +390,29 @@ int main()
     InitTree(root);
     bool continue_ = true;
     while (continue_) {
-        outfile << "\n- - - - - - - - - - - - - - - - - - - -";
+        /*outfile << "\n- - - - - - - - - - - - - - - - - - - -";
         outfile << "\n0. Them tu moi vao tu dien";
         outfile << "\n1. Xoa mot tu";
         outfile << "\n2. Tim kiem nghia tieng Viet cua mot tu tieng Anh";
         outfile << "\n3. Xuat toan bo tu dien ra tap tin";
-        outfile << "\n4. Thoat";
+        outfile << "\n4. Thoat";*/
         int choice;
-        outfile << "\nNhap lua chon (so nguyen): ";
+        //outfile << "\nNhap lua chon (so nguyen): ";
         infile >> choice;
         switch (choice)
         {
-        case 0:{
-        	int numberOfWords;
-        	infile>>numberOfWords;
-        	string tmp, EnglishMeaning, VietnameseMeaning;
-        	infile.ignore();
-        	for(int i=0;i<numberOfWords;i++){
-        		getline(infile, tmp);
-        		SplitWord(tmp, EnglishMeaning, VietnameseMeaning);
-        		taller = false;
-        		InsertNode(root, CreateNode(EnglishMeaning, VietnameseMeaning), taller);
-        	}
-        	break;
+        case 0: {
+            int numberOfWords;
+            infile >> numberOfWords;
+            string tmp, EnglishMeaning, VietnameseMeaning;
+            infile.ignore();
+            for (int i = 0; i < numberOfWords; i++) {
+                getline(infile, tmp);
+                SplitWord(tmp, EnglishMeaning, VietnameseMeaning);
+                taller = false;
+                InsertNode(root, CreateNode(EnglishMeaning, VietnameseMeaning), taller);
+            }
+            break;
         }
         case 1: {
             string tmp;
@@ -426,13 +424,13 @@ int main()
         case 2: {
             string tmp;
             getline(infile, tmp);
-            TNode* p= SearchNode(root, tmp);
-            if(p == NULL)	outfile<<"\nNULL";
-            else	outfile<<"\n"<<p->EnglishMeaning<<","<<p->VietnameseMeaning;
+            TNode* p = SearchNode(root, tmp);
+            if (p == NULL)	outfile << "\nNULL";
+            else	outfile << "\n" << p->EnglishMeaning << "," << p->VietnameseMeaning;
             break;
         }
         case 3: {
-            PrintDictionary(root);          
+            PrintDictionary(root);
             break;
         }
         case 4: {
