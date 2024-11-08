@@ -1,0 +1,542 @@
+// bai1.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+#include<iomanip>//dung setw
+using namespace std;
+#define ElementType int
+#define LH -1 //cay con trai cao hon
+#define EH 0//cay con trai bang cay con phai
+#define RH 1 //cay con phai cao hon
+#include<vector>
+#define NONE -9999999
+#include<vector>
+bool taller = false;//(gia su) true khi cay co tang truong chieu cao
+bool shorter = false;//true khi cay giam chieu cao
+typedef struct tagTNode
+{
+    int balFactor; //chỉ số cân bằng
+    ElementType key;
+    tagTNode* pLeft, * pRight;
+    int numberOfElementsHaveTheSameValue;
+} TNode;
+vector<TNode*>cacNodeDaDuyet;
+TNode* CreateNode(ElementType value) {
+    TNode* p = new TNode;
+    if (p == NULL) return NULL;
+    p->key = value;
+    p->pLeft = NULL;
+    p->pRight = NULL;
+    p->balFactor = EH;
+    p->numberOfElementsHaveTheSameValue = 1;
+    return p;
+}
+int HighTree(TNode* root);
+void InitTree(TNode*& root) {
+    root = NULL;
+}
+int IsEmptyTree(TNode* root) {
+    if (root == NULL) {
+        return 1;
+    }
+    return 0;
+}
+void LL(TNode*& T) {
+    TNode* T1 = T->pLeft;
+    T->pLeft = T1->pRight;
+    T1->pRight = T;
+    switch (T1->balFactor)
+    {
+    case LH: {
+        T->balFactor = EH;
+        T1->balFactor = EH;
+        break;
+    }
+
+    case EH: {
+        T->balFactor = LH;
+        T1->balFactor = RH;
+        break;
+    }
+    }
+    T = T1;
+}
+void RR(TNode*& T)
+{
+    TNode* T1 = T->pRight;
+    T->pRight = T1->pLeft;
+    T1->pLeft = T;
+    switch (T1->balFactor)
+    {
+    case RH: {
+        T->balFactor = EH;
+
+        T1->balFactor = EH; break;
+    }
+
+    case EH: {
+        T->balFactor = RH;
+
+        T1->balFactor = LH; break;
+    }   
+    }
+    T = T1;
+}
+void LR(TNode*& T)
+{
+    TNode* T1 = T->pLeft;
+    TNode* T2 = T1->pRight;
+    T->pLeft = T2->pRight;
+    T2->pRight = T;
+    T1->pRight = T2->pLeft;
+    T2->pLeft = T1;
+    switch (T2->balFactor)
+    {
+    case LH: T->balFactor = RH;
+
+        T1->balFactor = EH; break;
+
+    case EH: T->balFactor = EH;
+
+        T1->balFactor = EH; break;
+
+    case RH: T->balFactor = EH;
+
+        T1->balFactor = LH; break;
+
+    }T2->balFactor = EH; T = T2;
+}
+void RL(TNode*& T)
+{
+    TNode* T1 = T->pRight;
+    TNode* T2 = T1->pLeft;
+    T->pRight = T2->pLeft;
+    T2->pLeft = T;
+    T1->pLeft = T2->pRight;
+    T2->pRight = T1;
+    switch (T2->balFactor)
+    {
+    case RH: T->balFactor = LH;
+
+        T1->balFactor = EH; break;
+
+    case EH: T->balFactor = EH;
+
+        T1->balFactor = EH; break;
+
+    case LH: T->balFactor = EH;
+
+        T1->balFactor = RH; break;
+
+    }
+    T2->balFactor = EH; T = T2;
+}
+int HighTree(TNode* root)
+{
+    if (!root) return 0;
+    int hl = HighTree(root->pLeft);
+    int hr = HighTree(root->pRight);
+    if (hl > hr)
+        return (1 + hl);
+    else
+        return (1 + hr);
+}
+
+void InsertNode(TNode*& root, TNode* node, bool& taller) {
+    if (node == NULL) {
+        cout << "\nNode truyen vao la NULL! Khong chen duoc!";
+        return;
+    }
+    if (root == NULL) {
+        root = node;
+        taller = true; // cây tăng chiều cao
+        return;
+    }
+    if (node->key < root->key) {
+        InsertNode(root->pLeft, node, taller);
+        if (taller) {
+            if (root->balFactor == LH) { // Cây mất cân bằng trái
+                if (root->pLeft->balFactor == LH) {// cây con trái cũng mất cân bằng trái
+                    LL(root);
+                }
+                else {//cây con trái mất cân bằng phải
+                    LR(root);
+                }
+                taller = false;//cây đã cân bằng sau khi quay
+            }
+            else if (root->balFactor == EH) {
+                root->balFactor = LH;
+                taller = true; // Chiều cao tăng
+            }
+            else { // root->balFactor == RH
+                root->balFactor = EH;
+                taller = false; // Cây cân bằng -> không tăng chiều cao
+            }
+        }
+    }
+    else {
+        if (node->key > root->key) {
+            InsertNode(root->pRight, node, taller);
+            if (taller) {
+                if (root->balFactor == RH) { // Cây mất cân bằng phải
+                    if (root->pRight->balFactor == RH) {// cây con phải cũng mất cân bằng phải
+                        RR(root);
+                    }
+                    else {// cây con phải mất cân bằng trái
+                        RL(root);
+                    }
+                    taller = false;
+                }
+                else if (root->balFactor == EH) {
+                    root->balFactor = RH;
+                    taller = true;
+                }
+                else { // root->balFactor == LH
+                    root->balFactor = EH;
+                    taller = false;
+                }
+            }
+        }
+       else{
+       	root->numberOfElementsHaveTheSameValue++;
+       	return;
+       }
+    }
+}
+void ThayThe(TNode*& p, TNode*& T) {
+    if (T->pLeft != NULL)  ThayThe(p, T->pLeft);
+    else
+    {
+        p->key = T->key;
+        p = T;
+        T = T->pRight;
+    }
+}
+void DeleteNode(TNode*& root, ElementType key) {
+    cacNodeDaDuyet.push_back(root);
+    if (root == NULL) return;
+
+    if (key < root->key) {
+        DeleteNode(root->pLeft, key);
+    }
+    else if (key > root->key) {
+        DeleteNode(root->pRight, key);
+    }
+    else { // Tìm thấy node cần xóa
+        TNode* temp = root;
+        if (root->pLeft == NULL) {
+            root = root->pRight;
+        }
+        else if (root->pRight == NULL) {
+            root = root->pLeft;
+        }
+        else { // node có 2 con 
+            ThayThe(temp, root->pRight);//nut trai nhat ben phai
+        }
+        delete temp;
+    }
+}
+TNode* SearchNode(TNode* root, ElementType x) {
+    TNode* p = root;
+    while (p != NULL)
+    {
+        if (x == p->key) return p;
+        else
+            if (x < p->key) p = p->pLeft;
+            else p = p->pRight;
+    }
+    return NULL;
+}
+void PrintTree_PreOrder(TNode* root) {
+    if (root != NULL) {
+        cout << "\n" << root->key;
+        PrintTree_PreOrder(root->pLeft);
+        PrintTree_PreOrder(root->pRight);
+    }
+}
+void PrintTree_InOrder(TNode* root) {
+    if (root != NULL) {
+        PrintTree_InOrder(root->pLeft);
+        cout << "\n" << root->key;
+        PrintTree_InOrder(root->pRight);
+    }
+}
+void PrintTree_PostOrder(TNode* root) {
+    if (root != NULL) {
+        PrintTree_PostOrder(root->pLeft);
+        PrintTree_PostOrder(root->pRight);
+        cout << "\n" << root->key;
+    }
+}
+void PrintTree(TNode* root, int space = 0, int height = 6)
+{
+    if (root == NULL)        return;
+
+    space += height;
+
+    PrintTree(root->pRight, space);
+
+    cout << endl;
+    cout << setw(space) << root->key << "(" << root->balFactor << ")" << endl;
+
+    PrintTree(root->pLeft, space);
+}
+int CountNode(TNode* root)
+{
+    if (!root) return 0;
+    int nl = CountNode(root->pLeft);
+    int nr = CountNode(root->pRight);
+    return (1 + nl + nr);
+}
+int CountNodeLeaf(TNode* root)
+{
+    if (!root) return 0;
+    if (!root->pLeft && !root->pRight) return 1;
+    int nll = CountNodeLeaf(root->pLeft);
+    int nrl = CountNodeLeaf(root->pRight);
+    return (nll + nrl);
+}
+int CountBranchNode(TNode* root) {
+    return CountNode(root) - CountNodeLeaf(root) - 1;//-1 node goc
+}
+int CountEvenElement(TNode* root) {
+    if (!root)	return 0;//root = NULL
+    //int countEvenElementInLeftSubtree = 0, countEvenElementInRightSubtree = 0;
+    if (root->key % 2 == 0)
+        return CountEvenElement(root->pRight) + CountEvenElement(root->pLeft) + 1;
+    else
+        return CountEvenElement(root->pRight) + CountEvenElement(root->pLeft);
+}
+int SumNodekey(TNode* root) {
+    if (root == NULL)	return 0;
+    return root->key + SumNodekey(root->pLeft) + SumNodekey(root->pRight);
+}
+int FindMaxElement(TNode* root) {
+    if (root == NULL)	return NONE;
+    TNode* p = root;
+    while (p->pRight != NULL)	p = p->pRight;
+    return p->key;
+}
+int FindMinElement(TNode* root) {
+    if (root == NULL)	return NONE;
+    TNode* p = root;
+    while (p->pLeft != NULL)	p = p->pLeft;
+    return p->key;
+}
+int FindMaxNegativeElement
+(TNode* root) {
+    if (root == NULL)	return NONE;
+    if (root->key < 0) {	//return root->key;
+        TNode* p = root;
+        while (p->pRight->key < 0)
+            p = p->pRight;
+        return p->key;
+    }
+    else {
+        //key >= 0
+        TNode* p = root->pLeft;
+        while (p->key >= 0)	p = p->pLeft;
+        if (p != NULL)	return p->key;
+        return NONE;
+    }
+}
+int CountNumberOfElementInTree(TNode* root){
+	if(root == NULL)	return 0;
+	return CountNumberOfElementInTree(root->pLeft) + CountNumberOfElementInTree(root->pRight) + 1;
+}
+void CountNumberOfElementOfkeyInTree(TNode* root){
+	if(root != NULL){
+		CountNumberOfElementOfkeyInTree(root->pLeft);
+		cout<<"\n"<<root->key<<" xuat hien "<<root->numberOfElementsHaveTheSameValue<<" lan";
+		CountNumberOfElementOfkeyInTree(root->pRight);
+	}
+}
+int main()
+{
+    TNode* root;
+    InitTree(root);
+    bool continue_ = true;
+    while (continue_) {
+        cout << "\n- - - - - - - - - - - - - - - - - - - -";
+        cout << "\n1. Tao node moi";
+        cout << "\n2. Kiem tra cay rong";
+        cout << "\n3. Them 1 phan tu vao cay";
+        cout<<"\n4. Xoa 1 phan tu tren cay";
+        cout<<"\n5. Tim kiem phan tu tren cay";
+        cout << "\n6. Duyet tien tu";
+        cout<<"\n7. Duyet trung tu";
+        cout<<"\n8. Duyet hau tu";
+        cout<<"\n9. Chieu cao cua cay";
+        cout<<"\n10. Dem so node nhanh";
+        cout<<"\n11. Dem so node la";
+        cout<<"\n12. Dem phan tu chan tren cay";
+        cout<<"\n13. Tinh tong cac nut gia tri nguyen";
+        cout<<"\n14. Gia tri nguyen lon nhat, be nhat";
+        cout<<"\n15. Phan tu max am";
+        cout<<"\n16. So gia tri phan biet trong cay";
+        cout<<"\n17. So luong phan tu moi gia tri phan biet";
+        cout << "\n18. Thoat";
+        int choice;
+        cout << "\nNhap lua chon (so nguyen): ";
+        cin >> choice;
+        switch (choice)
+        {
+        case 1: {
+            cout << "\nNhap thong tin node can tao! Nhap gia tri: ";
+            int value;
+            cin >> value;
+            TNode* p = CreateNode(value);
+            cout << "\nGia tri node vua tao: " << p->key;
+            cout << "\nDia chi node vua tao: Node trai: " << p->pLeft << ", Node phai: " << p->pRight;
+            break;
+        }
+        case 2: {
+            if (IsEmptyTree(root) == 1) cout << "\nCay rong!";
+            else
+            {
+                cout << "\nCay khong rong!";
+            }
+            break;
+        }
+        case 3: {
+            cout << "\nNhap thong tin node can them! Nhap gia tri: ";
+            int value;
+            cin >> value;
+            InsertNode(root, CreateNode(value));
+            break;
+        }
+        case 4: {
+            int value;
+            cout<<"Nhap phan tu can xoa: ";
+            cin>>value;
+            DeleteNode(root, value);
+            break;
+        }
+        case 5:{
+        	int newkey;
+    		cout<<"\nNhap gia tri phan tu can tim: ";
+  		  cin>>newkey;
+    		if(SearchNode(root, newkey)!=NULL)
+   			 cout<<"\nTim thay gia tri vua nhap!";
+    		else	cout<<"\nKhong tim thay gia tri vua nhap!";
+        	break;
+		}
+		case 6:{
+		      
+		      break;		      
+		}
+        case 10: {
+            continue_ = false;
+            break;
+        }
+        default:
+            cout << "\nSo vua nhap khong hop le!";
+            break;
+        }
+    }	if(cacNodeDaDuyet[cacNodeDaDuyet.size() - 1] != NULL)
+//		indexLastNode = cacNodeDaDuyet.size() - 1;
+//	else
+//		indexLastNode = cacNodeDaDuyet.size() - 2;
+//	for(int i = 0; i<= indexLastNode; i++)
+//		cout<<cacNodeDaDuyet[i]->key<<" ";
+
+//	cout<<"\nSo nut nhanh: "<<CountBranchNode(root);
+//	
+//	cout<<"\nSo nut la: "<<CountNodeLeaf(root);
+//	
+//	cout<<"\nSo phan tu chan tren cay: "<<CountEvenElement(root);
+//	
+//	cout<<"\nTong cac gia tri nguyen tren cay: "<<SumNodekey(root);
+
+    //int maxValue = FindMaxElement(root), minValue = FindMinElement(root);
+//	if(maxValue != NONE)	cout<<"\nGia tri nguyen lon nhat: "<<maxValue;
+//	else	cout<<"\nKhong co gia tri nguyen lon nhat";
+//	if(minValue != NONE)	cout<<"\nGia tri nguyen be nhat: "<<minValue;
+//	else	cout<<"\nKhong co gia tri nguyen be nhat";
+
+//    int maxNegativeElement = FindMaxNegativeElement(root);
+//    if (maxNegativeElement != NONE)	cout << "\nGia tri am lon nhat: " << maxNegativeElement;
+//    else	cout << "\nKhong co gia tri am lon nhat";
+	//cout<<"\nNhap so luong phan tu day so: ";
+//	int N;
+//	cin>>N;
+//	if(N > 0){
+//		TNode *newRoot;
+//		InitTree(newRoot);
+//		vector<ElementType>arr(N);
+//		
+//		for(int i = 0; i < N; i++){
+//		   cout<<"\nNhap arr["<<i<<"] = ";
+//		   cin>>arr[i];
+//		  InsertNode(newRoot, CreateNode(arr[i]), taller);
+//		}
+//		cout<<"\nSo luong cac phan tu phan biet trong day so: "<<CountNumberOfElementInTree(newRoot);
+//	}
+//	else{
+//	   cout<<"\nKhong co phan tu nao trong day so!";
+//	}
+
+	cout<<"\nNhap so luong phan tu day so: ";
+	int N;
+	cin>>N;
+	if(N > 0){
+		TNode *newRoot;
+		InitTree(newRoot);
+		vector<ElementType>arr(N);
+		
+		for(int i = 0; i < N; i++){
+		   cout<<"\nNhap arr["<<i<<"] = ";
+		   cin>>arr[i];
+		  InsertNode(newRoot, CreateNode(arr[i]), taller);
+		}
+		cout<<"\nSo luong cac phan tu trong moi gia tri phan biet trong day so: ";
+		CountNumberOfElementOfkeyInTree(newRoot);
+	}
+	else{
+	   cout<<"\nKhong co phan tu nao trong day so!";
+	}
+    return 0;
+}
+    //InsertNode(root, CreateNode(1), taller);
+//    InsertNode(root, CreateNode(3), taller);
+
+//    InsertNode(root, CreateNode(0), taller);
+
+//    InsertNode(root, CreateNode(-5), taller);
+//    
+//    InsertNode(root, CreateNode(-1), taller);
+
+//    InsertNode(root, CreateNode(5), taller);
+
+//    InsertNode(root, CreateNode(10), taller);
+
+//    InsertNode(root, CreateNode(-15), taller);
+//    InsertNode(root, CreateNode(50), taller);
+//   
+//    InsertNode(root, CreateNode(50), taller);
+//    InsertNode(root, CreateNode(25), taller);
+//    InsertNode(root, CreateNode(35), taller);
+//    
+
+//    PrintTree(root);
+//    int n;
+//    cin >> n;
+//    DeleteNode(root, n);
+//    PrintTree(root);
+//    cout << "\n";
+//    PrintTree_InOrder(root);
+//	cout<<"\n";
+//	int indexLastNode;
+//
+
+
+// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
+// Debug program: F5 or Debug > Start Debugging menu
+
+// Tips for Getting Started: 
+//   1. Use the Solution Explorer window to add/manage files
+//   2. Use the Team Explorer window to connect to source control
+//   3. Use the Output window to see build output and other messages
+//   4. Use the Error List window to view errors
+//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
+//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
