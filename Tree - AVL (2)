@@ -78,7 +78,7 @@ void RR(TNode*& T)
         T->balFactor = RH;
 
         T1->balFactor = LH; break;
-    }   
+    }
     }
     T = T1;
 }
@@ -197,10 +197,10 @@ void InsertNode(TNode*& root, TNode* node, bool& taller) {
                 }
             }
         }
-       else{
-       	root->numberOfElementsHaveTheSameValue++;
-       	return;
-       }
+        else {
+            root->numberOfElementsHaveTheSameValue++;
+            return;
+        }
     }
 }
 void ThayThe(TNode*& p, TNode*& T) {
@@ -323,60 +323,60 @@ int FindMinElement(TNode* root) {
     while (p->pLeft != NULL)	p = p->pLeft;
     return p->key;
 }
-int FindMaxNegativeElement
-(TNode* root) {
+int FindMaxNegativeElement(TNode* root) {
     if (root == NULL)	return NONE;
     if (root->key < 0) {	//return root->key;
         TNode* p = root;
-        while (p->pRight->key < 0)
+        while (p->pRight != NULL && p->pRight->key < 0)
             p = p->pRight;
         return p->key;
     }
     else {
         //key >= 0
-        TNode* p = root->pLeft;
-        while (p->key >= 0)	p = p->pLeft;
-        if (p != NULL)	return p->key;
+        if (root->pLeft != NULL) {
+            TNode* p = root->pLeft;
+            while (p->key >= 0 && p->pLeft != NULL)	p = p->pLeft;//
+            if (p != NULL && p->key < 0)	return p->key;
+        }
         return NONE;
     }
 }
-int CountNumberOfElementInTree(TNode* root){
-	if(root == NULL)	return 0;
-	return CountNumberOfElementInTree(root->pLeft) + CountNumberOfElementInTree(root->pRight) + 1;
+int CountNumberOfElementInTree(TNode* root) {
+    if (root == NULL)	return 0;
+    return CountNumberOfElementInTree(root->pLeft) + CountNumberOfElementInTree(root->pRight) + 1;
 }
-void CountNumberOfElementOfkeyInTree(TNode* root){
-	if(root != NULL){
-		CountNumberOfElementOfkeyInTree(root->pLeft);
-		cout<<"\n"<<root->key<<" xuat hien "<<root->numberOfElementsHaveTheSameValue<<" lan";
-		CountNumberOfElementOfkeyInTree(root->pRight);
-	}
+void CountNumberOfElementOfkeyInTree(TNode* root) {
+    if (root != NULL) {
+        CountNumberOfElementOfkeyInTree(root->pLeft);
+        cout << "\n" << root->key << " xuat hien " << root->numberOfElementsHaveTheSameValue << " lan";
+        CountNumberOfElementOfkeyInTree(root->pRight);
+    }
 }
 int main()
 {
     TNode* root;
     InitTree(root);
-    bool continue_ = true;
-    while (continue_) {
+    int choice = 1;
+    while (choice != 18) {
         cout << "\n- - - - - - - - - - - - - - - - - - - -";
         cout << "\n1. Tao node moi";
         cout << "\n2. Kiem tra cay rong";
         cout << "\n3. Them 1 phan tu vao cay";
-        cout<<"\n4. Xoa 1 phan tu tren cay";
-        cout<<"\n5. Tim kiem phan tu tren cay";
+        cout << "\n4. Xoa 1 phan tu tren cay";
+        cout << "\n5. Tim kiem phan tu tren cay";
         cout << "\n6. Duyet tien tu";
-        cout<<"\n7. Duyet trung tu";
-        cout<<"\n8. Duyet hau tu";
-        cout<<"\n9. Chieu cao cua cay";
-        cout<<"\n10. Dem so node nhanh";
-        cout<<"\n11. Dem so node la";
-        cout<<"\n12. Dem phan tu chan tren cay";
-        cout<<"\n13. Tinh tong cac nut gia tri nguyen";
-        cout<<"\n14. Gia tri nguyen lon nhat, be nhat";
-        cout<<"\n15. Phan tu max am";
-        cout<<"\n16. So gia tri phan biet trong cay";
-        cout<<"\n17. So luong phan tu moi gia tri phan biet";
+        cout << "\n7. Duyet trung tu";
+        cout << "\n8. Duyet hau tu";
+        cout << "\n9. Chieu cao cua cay";
+        cout << "\n10. Dem so node nhanh";
+        cout << "\n11. Dem so node la";
+        cout << "\n12. Dem phan tu chan tren cay";
+        cout << "\n13. Tinh tong cac nut gia tri nguyen";
+        cout << "\n14. Gia tri nguyen lon nhat, be nhat";
+        cout << "\n15. Phan tu max am";
+        cout << "\n16. So gia tri phan biet trong cay";
+        cout << "\n17. So luong phan tu moi gia tri phan biet";
         cout << "\n18. Thoat";
-        int choice;
         cout << "\nNhap lua chon (so nguyen): ";
         cin >> choice;
         switch (choice)
@@ -402,102 +402,126 @@ int main()
             cout << "\nNhap thong tin node can them! Nhap gia tri: ";
             int value;
             cin >> value;
-            InsertNode(root, CreateNode(value));
+            taller = false;
+            InsertNode(root, CreateNode(value), taller);
             break;
         }
         case 4: {
             int value;
-            cout<<"Nhap phan tu can xoa: ";
-            cin>>value;
+            cout << "Nhap phan tu can xoa: ";
+            cin >> value;
             DeleteNode(root, value);
             break;
         }
-        case 5:{
-        	int newkey;
-    		cout<<"\nNhap gia tri phan tu can tim: ";
-  		  cin>>newkey;
-    		if(SearchNode(root, newkey)!=NULL)
-   			 cout<<"\nTim thay gia tri vua nhap!";
-    		else	cout<<"\nKhong tim thay gia tri vua nhap!";
-        	break;
-		}
-		case 6:{
-		      
-		      break;		      
-		}
-        case 10: {
-            continue_ = false;
+        case 5: {
+            int newkey;
+            cout << "\nNhap gia tri phan tu can tim: ";
+            cin >> newkey;
+            if (SearchNode(root, newkey) != NULL)
+                cout << "\nTim thay gia tri vua nhap!";
+            else	cout << "\nKhong tim thay gia tri vua nhap!";
+            break;
+        }
+        case 6: {
+            PrintTree_PreOrder(root);
+            break;
+        }
+        case 7: {
+            PrintTree_InOrder(root);
+            break;
+        }
+        case 8: {
+            PrintTree_PostOrder(root);
+        }
+        case 9: {
+            cout << "\nChieu cao cay: " << HighTree(root);
+            break;
+        }
+        case 10:{
+            cout<<"\nSo nut nhanh: "<<CountBranchNode(root);
+            break;
+        }
+        case 11: {
+            cout << "\nSo nut la: " << CountNodeLeaf(root);
+            break;
+        }
+        case 12: {
+            cout << "\nso phan tu chan tren cay: " << CountEvenElement(root);
+            break;
+        }
+        case 13:{
+            cout << "\nTong cac gia tri nguyen tren cay: " << SumNodekey(root);
+            break;
+        }
+        case 14: {
+            int maxValue = FindMaxElement(root), minValue = FindMinElement(root);
+            if (maxValue != NONE)	cout << "\nGia tri nguyen lon nhat: " << maxValue;
+            else	cout << "\nKhong co gia tri nguyen lon nhat";
+            if (minValue != NONE)	cout << "\nGia tri nguyen be nhat: " << minValue;
+            else	cout << "\nKhong co gia tri nguyen be nhat";
+            break;
+        }
+        case 15: {
+            int maxNegativeElement = FindMaxNegativeElement(root);
+            if (maxNegativeElement != NONE)	cout << "\nGia tri am lon nhat: " << maxNegativeElement;
+            else	cout << "\nKhong co gia tri am lon nhat";
+            break;
+        }
+        case 16: {
+            cout << "\nNhap so luong phan tu day so: ";
+            int N;
+            cin >> N;
+            if (N > 0) {
+                TNode* newRoot;
+                InitTree(newRoot);
+                vector<ElementType>arr(N);
+
+                for (int i = 0; i < N; i++) {
+                    cout << "\nNhap arr[" << i << "] = ";
+                    cin >> arr[i];
+                    InsertNode(newRoot, CreateNode(arr[i]), taller);
+                }
+                cout << "\nSo luong cac phan tu phan biet trong day so: " << CountNumberOfElementInTree(newRoot);
+            }
+            else {
+                cout << "\nKhong co phan tu nao trong day so!";
+            }
+            break;
+        }
+        case 17: {
+            cout << "\nNhap so luong phan tu day so: ";
+            int N;
+            cin >> N;
+            if (N > 0) {
+                TNode* newRoot;
+                InitTree(newRoot);
+                vector<ElementType>arr(N);
+
+                for (int i = 0; i < N; i++) {
+                    cout << "\nNhap arr[" << i << "] = ";
+                    cin >> arr[i];
+                    taller = false;
+                    InsertNode(newRoot, CreateNode(arr[i]), taller);
+                }
+                cout << "\nSo luong cac phan tu trong moi gia tri phan biet trong day so: ";
+                CountNumberOfElementOfkeyInTree(newRoot);
+            }
+            else {
+                cout << "\nKhong co phan tu nao trong day so!";
+            }
+            break;
+        }
+        case 18: {
             break;
         }
         default:
             cout << "\nSo vua nhap khong hop le!";
             break;
         }
-    }	if(cacNodeDaDuyet[cacNodeDaDuyet.size() - 1] != NULL)
-//		indexLastNode = cacNodeDaDuyet.size() - 1;
-//	else
-//		indexLastNode = cacNodeDaDuyet.size() - 2;
-//	for(int i = 0; i<= indexLastNode; i++)
-//		cout<<cacNodeDaDuyet[i]->key<<" ";
-
-//	cout<<"\nSo nut nhanh: "<<CountBranchNode(root);
-//	
-//	cout<<"\nSo nut la: "<<CountNodeLeaf(root);
-//	
-//	cout<<"\nSo phan tu chan tren cay: "<<CountEvenElement(root);
-//	
-//	cout<<"\nTong cac gia tri nguyen tren cay: "<<SumNodekey(root);
-
-    //int maxValue = FindMaxElement(root), minValue = FindMinElement(root);
-//	if(maxValue != NONE)	cout<<"\nGia tri nguyen lon nhat: "<<maxValue;
-//	else	cout<<"\nKhong co gia tri nguyen lon nhat";
-//	if(minValue != NONE)	cout<<"\nGia tri nguyen be nhat: "<<minValue;
-//	else	cout<<"\nKhong co gia tri nguyen be nhat";
-
-//    int maxNegativeElement = FindMaxNegativeElement(root);
-//    if (maxNegativeElement != NONE)	cout << "\nGia tri am lon nhat: " << maxNegativeElement;
-//    else	cout << "\nKhong co gia tri am lon nhat";
-	//cout<<"\nNhap so luong phan tu day so: ";
-//	int N;
-//	cin>>N;
-//	if(N > 0){
-//		TNode *newRoot;
-//		InitTree(newRoot);
-//		vector<ElementType>arr(N);
-//		
-//		for(int i = 0; i < N; i++){
-//		   cout<<"\nNhap arr["<<i<<"] = ";
-//		   cin>>arr[i];
-//		  InsertNode(newRoot, CreateNode(arr[i]), taller);
-//		}
-//		cout<<"\nSo luong cac phan tu phan biet trong day so: "<<CountNumberOfElementInTree(newRoot);
-//	}
-//	else{
-//	   cout<<"\nKhong co phan tu nao trong day so!";
-//	}
-
-	cout<<"\nNhap so luong phan tu day so: ";
-	int N;
-	cin>>N;
-	if(N > 0){
-		TNode *newRoot;
-		InitTree(newRoot);
-		vector<ElementType>arr(N);
-		
-		for(int i = 0; i < N; i++){
-		   cout<<"\nNhap arr["<<i<<"] = ";
-		   cin>>arr[i];
-		  InsertNode(newRoot, CreateNode(arr[i]), taller);
-		}
-		cout<<"\nSo luong cac phan tu trong moi gia tri phan biet trong day so: ";
-		CountNumberOfElementOfkeyInTree(newRoot);
-	}
-	else{
-	   cout<<"\nKhong co phan tu nao trong day so!";
-	}
+    }	 
     return 0;
 }
-    //InsertNode(root, CreateNode(1), taller);
+//InsertNode(root, CreateNode(1), taller);
 //    InsertNode(root, CreateNode(3), taller);
 
 //    InsertNode(root, CreateNode(0), taller);
@@ -527,7 +551,12 @@ int main()
 //    PrintTree_InOrder(root);
 //	cout<<"\n";
 //	int indexLastNode;
-//
+//  if (cacNodeDaDuyet[cacNodeDaDuyet.size() - 1] != NULL)
+        //		indexLastNode = cacNodeDaDuyet.size() - 1;
+        //	else
+        //		indexLastNode = cacNodeDaDuyet.size() - 2;
+        //	for(int i = 0; i<= indexLastNode; i++)
+        //		cout<<cacNodeDaDuyet[i]->key<<" ";
 
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
