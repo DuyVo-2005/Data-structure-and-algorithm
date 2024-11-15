@@ -1,0 +1,155 @@
+#include<iostream>
+using namespace std;
+#define TRUE 1
+#define FALSE 0
+#define M 100
+#define data int
+struct Node{
+	data key;
+	Node* pNext = nullptr;
+};
+//class Node{
+//	public:
+//		data key;
+//		Node* pNext;
+//		Node(){
+//			pNext = nullptr;
+//		}
+//		~Node(){
+//			delete this;
+//		}
+//};
+void FreeNode(Node* p){
+	//xoa 1 nut trong bo nho
+	delete p;
+}
+class HashTable{
+	public:
+		Node* bucket[M];
+	void InitBucket(){	
+		for(int i = 0; i < M; i++)
+			this->bucket[i] = nullptr;
+	}
+	int HashFunction(data key){
+		return (key % M);
+	}
+	bool IsEmptyBucket(int b){
+		return this->bucket[b] == nullptr;
+	}
+	void Push(int b, int x){
+		//them 1 nut vao dau bucket
+		Node *p = new Node;
+		p->key = x;
+		p->pNext = bucket[b];
+		bucket[b] = p;
+	}
+	void InsertAfter(Node* p, data k){
+		//chen node vao sau node q
+		if(p == nullptr)	cout<<"\nKhong the them node nullptr!";
+		else{
+			Node* q = new Node;
+			q->key = k;
+			q->pNext = p->pNext;
+			p->pNext = q;
+		}
+	}
+	void Place(int b, int k){
+		//chen k vao danh sach lien ket
+		Node *p, *q;
+		q = nullptr;
+		for(p = bucket[b]; p != nullptr && k > p->key; p = p->pNext)	q = p;
+		if(q == nullptr)	Push(b, k);
+		else	InsertAfter(q, k);
+	}
+	bool IsEmpty(){
+		for(int b = 0; b < M; b++)
+			if(bucket[b] != nullptr)	return false;
+		return true;
+	}
+	void Insert(int k){
+		//chen phan tu co khoa k vao bang bam
+		int b = HashFunction(k);
+		this->Place(b, k);//chen k vao danh sach lien ket
+	}
+	int Pop(int b){
+		//xoa 1 nut o dau bucket
+		Node* p;
+		int k;
+		if(IsEmptyBucket(b)){
+			cout<<"\nBucket rong! Khong xoa duoc!";
+			return FALSE;
+		}
+		p = bucket[b];
+		k = p->key;
+		bucket[b] = p->pNext;
+		FreeNode(p);
+		return k;
+	}
+	int DeleteAfter(Node* p){
+		Node* q;
+		int k;
+		if(p == nullptr || p->pNext == nullptr){
+			cout<<"\nKhong xoa duoc!";
+			return FALSE;
+		}
+		q = p->pNext;	k = q->key;
+		p->pNext = q->pNext;
+		FreeNode(q);
+		return k;
+	}
+	void Remove(int k){
+		//huy muc co khoa k trong bang bam
+		Node* p, *q;
+		int b = HashFunction(k);
+		p = bucket[b];
+		while(p != nullptr && p->key != k){
+			q = p;	p = p->pNext;
+		}
+		if(p == nullptr)
+			cout<<"\nKhong xoa duoc do khong co node co khoa "<<k;
+		else if(p == bucket[b])	Pop(b);//xoa 1 node o dau bucket b
+		else	DeleteAfter(q);//xoa nut can xoa(nut p)
+	}
+	void ClearBucket(int b){
+		//xoa bucket trong bang bam
+		Node* p, *q;//q la node truoc, p la node sau
+		q = nullptr;
+		p = bucket[b];
+		while(p != nullptr){
+			q = p;
+			p = p->pNext;
+			FreeNode(q);
+		}
+		bucket[b] = nullptr;//khoi dong lai bucket[b]
+	}
+	void Clear(){
+		//xoa tat ca cac phan tu trong bang bam
+		for(int b = 0; b < M; b++)	ClearBucket(b);
+	}
+	void TraverseBucket(int b){
+		Node* p = bucket[b];
+		while(p != nullptr){
+			cout<<"\n"<<p->key;
+			p = p->pNext;
+		}
+	}
+	void TraverseHashTable(){
+		for(int b = 0; b < M; b++){
+			cout<<"\nBucket thu "<<b;
+			TraverseBucket(b);
+		}
+	}
+	Node* Search(int k){
+		int b = HashFunction(k);//xet xem k thuoc bucket nao
+		Node* p = bucket[b];
+		while((p != nullptr) && (k > p->key))	p = p->pNext;
+		if(p == nullptr || k != p->key)	return nullptr;//khong tim thay
+		return p;
+	}
+};
+
+int main(int argc, char *argv[])
+{
+	
+	return 0;
+}
