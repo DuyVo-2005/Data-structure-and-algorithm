@@ -54,24 +54,61 @@ int SearchItem(int hashtable[MAX], int x){
 	}
 	return -1;
 }
-void PrintHashtable(hashtable[MAX]){
+void PrintHashtable(int hashtable[]){
 	cout<<"\n";
 	for(int i = 0; i < MAX; i++)
-		cout<<"\n"<<i<<"\t"<<hashtable[i];
+		if(hashtable[i] != NONE)	cout<<"\n"<<i<<"\t"<<hashtable[i];
+		else	cout<<"\n"<<i<<"\t"<<"NONE";
 }
-int main(int argc, char *argv[]){	FillHashtable(hashtable, NONE);
+int main(){	FillHashtable(hashtable, NONE);
 	bool continue_ = true;
 	while(continue_){
 		int choice = -1;
-		while(choice != 4){
+		while(choice != 5){
+			cout<<"\n- - - - - - - -- - - - - - - - - - - - - - - -";
 			cout<<"\nDanh sach cac thao tac ";
 			cout<<"\n1. Them 1 phan tu vao bang bam";
 			cout<<"\n2. Xoa 1 phan tu khoi bang bam";
 			cout<<"\n3. Tim kiem 1 phan tu trong bang bam";
-			cout<<"\n4. Thoat";
+			cout<<"\n4. Xuat bang bam";
+			cout<<"\n5. Thoat";
 			cout<<"\nNhap so nguyen tuong ung voi lua chon: ";
 			cin>>choice;
-			if(choice == 1)
+			switch(choice){
+				case 1:{
+					int x;
+					cout<<"\nNhap phan tu can them (so nguyen): ";
+					cin>>x;
+					AddItem(hashtable, x);
+					break;
+				}
+				case 2:{
+					int x;
+					cout<<"\nNhap phan tu can xoa (so nguyen): ";
+					cin>>x;
+					RemoveItem(hashtable, x);
+					break;
+				}
+				case 3:{
+					int x;
+					cout<<"\nNhap phan tu can tim (so nguyen): ";
+					cin>>x;
+					int pos = SearchItem(hashtable, x);
+					if(pos == -1)
+						cout<<"\nKhong tim thay khoa "<<x;
+					else
+						cout<<"\nTim thay khoa "<<x<<" tai vi tri "<<pos;					
+					break;
+				}
+				case 4:{
+					PrintHashtable(hashtable);
+					break;	
+				}
+				case 5:{
+					continue_ = false;
+					break;
+				}
+			}
 		}
 	}
 	return 0;
