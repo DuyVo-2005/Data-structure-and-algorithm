@@ -8,7 +8,6 @@ using namespace std;
 #define FALSE 0
 #define TRUE 1
 #define NONE -99999999
-LINKEDLIST hashtable[MAX];
 typedef struct tagNode
 {
     int key;
@@ -137,8 +136,30 @@ int PopThebeginningOfBucket(int b)
     hashtable[b].pHead = p->pNext; FreeNode(p);
     return k;
 }
+int RemoveAfter(Node* p){
+	Node* q;//nut can xoa la q
+	int k;
+	if(p == NULL || p->pNext == NULL){
+		cout<<"\nKhong xoa node duoc!";
+		return FALSE;
+	}
+	q = p->pNext;
+	k = q->key;
+	p->pNext = q->pNext;
+	FreeNode(q);
+	return k;
+}
 void RemoveItem(LINKEDLIST hashtable[MAX], int x) {
-
+	Node* p, * q;
+	int b = HashFunction[x];
+	p = hashtable[b].pHead;
+	while(p != NULL && p->key != k){
+		q = p;
+		p = p->pNext;
+	}
+	if(p == NULL)	cout<<"\nKhong co node co khoa can xoa!";
+	else if(p == hashtable[b].pHead)	PopThebeginningOfBucket(b);
+	else	RemoveAfter(q);
 }
 int SearchItem(LINKEDLIST hashtable[MAX], int x)
 {
@@ -146,7 +167,82 @@ int SearchItem(LINKEDLIST hashtable[MAX], int x)
     return SearchNode(hashtable[index], x);
     //tim thay -> return 1, khong tim thay -> return 0
 }
+void TraverseBucket(int b){
+	Node* p = hashtable[b];
+	while(p != NULL){
+		cout<<p->key<<" ";
+		p = p->pNext;
+	}
+}
+void PrintHashtable(int hashtable[]){	
+	for(int b = 0; b < MAX; b++){
+		cout<<"\nBucket thu "<<b<<": ";
+		TraverseBucket(b);
+	}
+}
 int main()
-{
-    return 0;
+{    
+    bool continue_ = true;
+	while(continue_){
+		int choice = -1;
+		while(choice != 6){
+			cout<<"\n- - - - - - - -- - - - - - - - - - - - - - - -";
+			cout<<"\nDanh sach cac thao tac ";
+			cout<<"\n1. Them 1 phan tu vao bang bam";
+			cout<<"\n2. Xoa 1 phan tu khoi bang bam";
+			cout<<"\n3. Tim kiem 1 phan tu trong bang bam";
+			cout<<"\n4. Xuat bang bam";
+			cout<<"\n5. Tao 1 node moi va xuat thong tin node";
+			cout<<"\n6. Thoat";
+			cout<<"\nNhap so nguyen tuong ung voi lua chon: ";
+			cin>>choice;
+			switch(choice){
+				case 1:{
+					int x;
+					cout<<"\nNhap phan tu can them (so nguyen): ";
+					cin>>x;
+					AddItem(hashtable, x);
+					break;
+				}
+				case 2:{
+					int x;
+					cout<<"\nNhap phan tu can xoa (so nguyen): ";
+					cin>>x;
+					RemoveItem(hashtable, x);
+					break;
+				}
+				case 3:{
+					int x;
+					cout<<"\nNhap phan tu can tim (so nguyen): ";
+					cin>>x;
+					int pos = SearchItem(hashtable, x);
+					if(pos == -1)
+						cout<<"\nKhong tim thay khoa "<<x;
+					else
+						cout<<"\nTim thay khoa "<<x<<" tai vi tri "<<pos;					
+					break;
+				}
+				case 4:{
+					PrintHashtable(hashtable);
+					break;	
+				}
+				case 5:{
+					int x;
+					cout<<"\nNhap gia tri nguyen cho node can tao: ";
+					cin>>x;
+					Node* p = CreateNode(x);
+					cout<<"\nThong tin node vua tao: key "<<p->key<<" | dia chi node ke tiep "<<p->pNext;
+				}
+				case 6:{
+					continue_ = false;
+					break;
+				}
+				default:{
+					cout<<"\nSo vua nhap khong hop le! ";
+					break;
+				}
+			}
+		}
+	}
+	return 0;
 }
