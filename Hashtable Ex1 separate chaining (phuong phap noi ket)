@@ -1,0 +1,152 @@
+// bai5_1.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+using namespace std;
+//Định nghĩa bảng băm
+#define MAX 100
+#define FALSE 0
+#define TRUE 1
+#define NONE -99999999
+LINKEDLIST hashtable[MAX];
+typedef struct tagNode
+{
+    int key;
+    tagNode* pNext;
+} Node;
+typedef struct
+{
+    Node* pHead;
+    Node* pTail;
+}LINKEDLIST;
+LINKEDLIST hashtable[MAX];
+Node* CreateNode(int x) {
+    Node* p = new Node;
+    if (p == NULL)   return NULL;
+    p->key = x;
+    p->pNext = NULL;
+    return p;
+}
+void InitList(LINKEDLIST& l) {
+    l.pHead = l.pTail = NULL;
+}
+bool IsEmptyList(LINKEDLIST l) {
+    return l.pHead == NULL;
+}
+void AddFirst(LINKEDLIST &l, int x) {
+    Node* p = CreateNode(x);
+    if (IsEmptyList(l))  l.pHead = l.pTail = p;
+    else {
+        p->pNext = l.pHead;
+        l.pHead = p;
+    }
+}
+void AddLast(LINKEDLIST &l, int x) {
+    Node* p = CreateNode(x);
+    if (IsEmptyList(l))  l.pHead = l.pTail = p;
+    else {
+        l.pTail->pNext = p;
+        l.pTail = p;
+    }
+}
+void AddAfter(LINKEDLIST& l, Node* p, int x) {
+    //them node moi sau node p
+    Node* q = CreateNode(x);
+    if (p == NULL || q == NULL)  cout << "\nKhong them node moi duoc!";
+    else {
+        q->pNext = p->pNext;//luu dia chi phia sau q truoc
+        p->pNext = q;
+        if (p == l.pTail)    l.pTail = q;
+    }
+}
+void RemoveFirst(LINKEDLIST &l) {
+    if (IsEmptyList(l))  cout << "\nKhong xoa duoc do list rong!";
+    else if (l.pHead == l.pTail) {
+        //1 phan tu
+        delete l.pHead;
+        l.pHead = l.pTail = NULL;
+    }
+    else {
+        Node* p = l.pHead;
+        l.pHead = l.pHead->pNext;
+        delete p;
+    }
+}
+void RemoveLast(LINKEDLIST& l) {
+    if (IsEmptyList(l)) cout << "\nKhong xoa duoc do list rong!";
+    else if(l.pHead == l.pTail){//1 phan tu
+        delete l.pHead;
+        l.pHead = l.pTail = NULL;
+    }
+    else {
+        //nhieu hon 1 phan tu
+        Node* p = l.pHead;// p la nut truoc l.tail
+        while (p->pNext != l.pTail) {
+            p = p->pNext;
+        }
+        delete l.pTail;
+        l.pTail = p;
+        l.pTail->pNext = NULL;
+    }
+}
+int SearchNode(LINKEDLIST l, int x) {
+    for (Node* p = l.pHead; p != NULL; p = p->pNext)
+        if (p->key == x) return 1;//tim thay
+    return 0;//khong tim thay
+}
+void PushElementToTheBeginningOfHashTable(int b, int x)
+{
+    Node* p = new Node;
+    p->key = x;
+    p->pNext = hashtable[b].pHead;
+    hashtable[b].pHead = p;
+}
+void Place(int b, int k)
+{
+    Node* p, *q;
+    q = NULL;
+    for (p = hashtable[b].pHead; p != NULL && k > p->key; p = p->pNext)
+        q = p;
+    if (q == NULL)
+        PushElementToTheBeginningOfHashTable(b, k);
+    else
+        AddAfter(hashtable[b], q, k);
+}
+int HashFunction(int x){
+    return x % 11;
+}
+void AddItem(LINKEDLIST hashtable[MAX], int x) {
+    int b = HashFunction(x);
+    Place(b, x); //chen x vao danh sach lien ket
+}
+void FreeNode(Node* p){
+    delete p;
+}
+bool IsEmptyBucket(int b) {
+    return hashtable[b].pHead == NULL;
+}
+int PopThebeginningOfBucket(int b)
+{
+    Node* p;
+    int k;
+    if (IsEmptyBucket(b)) {
+        cout<<"Bucket dang rong, khong xoa duoc!";
+        return NONE;
+    }
+    p = hashtable[b].pHead; k = p->key;
+    hashtable[b].pHead = p->pNext; FreeNode(p);
+    return k;
+}
+void RemoveItem(LINKEDLIST hashtable[MAX], int x) {
+
+}
+int SearchItem(LINKEDLIST hashtable[MAX], int x)
+{
+    int index = HashFunction(x);
+    return SearchNode(hashtable[index], x);
+    //tim thay -> return 1, khong tim thay -> return 0
+}
+int main()
+{
+    return 0;
+}
