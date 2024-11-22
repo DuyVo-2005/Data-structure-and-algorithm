@@ -234,44 +234,44 @@ void InsertNode(TNode*& root, TNode* node, bool& taller) {
 //        }
 //    }
 //}
-void BalanceAfterDelete(TNode*& root, bool& shorter) {
-    if (root->balFactor == LH) { // Trái cao hơn
-        if (root->pLeft->balFactor == LH) { // LL Case
-            LL(root);
-            shorter = true;
-        }
-        else if (root->pLeft->balFactor == EH) { // Trái cân bằng trước, sau khi xóa sẽ cân bằng
-            LL(root);
-            root->balFactor = RH; // Điều chỉnh lại cân bằng
-            root->pLeft->balFactor = LH;
-            shorter = false;
-        }
-        else { // root->pLeft->balFactor == RH : LR Case
-            LR(root);
-            shorter = true;
-        }
-    }
-    else if (root->balFactor == EH) { // Cây đã cân bằng, giảm chiều cao
-        root->balFactor = RH;
-        shorter = false;
-    }
-    else { // RH
-        if (root->pRight->balFactor == RH) { // RR Case
-            RR(root);
-            shorter = true;
-        }
-        else if (root->pRight->balFactor == EH) { // Giống bên trên
-            RR(root);
-            root->balFactor = LH;
-            root->pRight->balFactor = RH;
-            shorter = false;
-        }
-        else { // RL
-            RL(root);
-            shorter = true;
-        }
-    }
-}
+//void BalanceAfterDelete(TNode*& root, bool& shorter) {
+//    if (root->balFactor == LH) { // Trái cao hơn
+//        if (root->pLeft->balFactor == LH) { // LL Case
+//            LL(root);
+//            shorter = true;
+//        }
+//        else if (root->pLeft->balFactor == EH) { // Trái cân bằng trước, sau khi xóa sẽ cân bằng
+//            LL(root);
+//            root->balFactor = RH; // Điều chỉnh lại cân bằng
+//            root->pLeft->balFactor = LH;
+//            shorter = false;
+//        }
+//        else { // root->pLeft->balFactor == RH : LR Case
+//            LR(root);
+//            shorter = true;
+//        }
+//    }
+//    else if (root->balFactor == EH) { // Cây đã cân bằng, giảm chiều cao
+//        root->balFactor = RH;
+//        shorter = false;
+//    }
+//    else { // RH
+//        if (root->pRight->balFactor == RH) { // RR Case
+//            RR(root);
+//            shorter = true;
+//        }
+//        else if (root->pRight->balFactor == EH) { // Giống bên trên
+//            RR(root);
+//            root->balFactor = LH;
+//            root->pRight->balFactor = RH;
+//            shorter = false;
+//        }
+//        else { // RL
+//            RL(root);
+//            shorter = true;
+//        }
+//    }
+//}
 void ThayThe(TNode*& p, TNode*& T) {
     if (T->pLeft != NULL)  ThayThe(p, T->pLeft);
     else
@@ -281,36 +281,91 @@ void ThayThe(TNode*& p, TNode*& T) {
         T = T->pRight;
     }
 }
+//void DeleteNode(TNode*& root, ElementType key, bool& shorter) {
+//    if (root == NULL) return;
+
+//    if (key < root->key) {
+//        DeleteNode(root->pLeft, key, shorter);
+//        if (shorter) BalanceAfterDelete(root, shorter);
+//    }
+//    else if (key > root->key) {
+//        DeleteNode(root->pRight, key, shorter);
+//        if (shorter) BalanceAfterDelete(root, shorter);
+//    }
+//    else { // Tìm thấy node cần xóa
+//        TNode* temp = root;
+//        if (root->pLeft == NULL) {
+//            root = root->pRight;
+//            shorter = true;
+//            //delete temp;
+//        }
+//        else if (root->pRight == NULL) {
+//            root = root->pLeft;
+//            shorter = true;
+//            //delete temp;
+//        }
+//        else { // node có 2 con 
+//            ThayThe(temp, root->pRight);//nut trai nhat ben phai
+//            //if (shorter)
+//             BalanceAfterDelete(root, shorter);
+//        }
+//        delete temp;
+//    }
+//}
+vector<TNode*> visitedNode;
+//void DeleteNode(TNode*& root, ElementType key, bool& shorter){
+//	
+//}
 void DeleteNode(TNode*& root, ElementType key, bool& shorter) {
+    visitedNode.push_back(root);
     if (root == NULL) return;
 
     if (key < root->key) {
         DeleteNode(root->pLeft, key, shorter);
-        if (shorter) BalanceAfterDelete(root, shorter);
     }
     else if (key > root->key) {
         DeleteNode(root->pRight, key, shorter);
-        if (shorter) BalanceAfterDelete(root, shorter);
     }
     else { // Tìm thấy node cần xóa
         TNode* temp = root;
         if (root->pLeft == NULL) {
             root = root->pRight;
             shorter = true;
-            //delete temp;
         }
         else if (root->pRight == NULL) {
             root = root->pLeft;
             shorter = true;
-            //delete temp;
         }
         else { // node có 2 con 
             ThayThe(temp, root->pRight);//nut trai nhat ben phai
-            //if (shorter)
-             BalanceAfterDelete(root, shorter);
+            shorter = true;            
         }
         delete temp;
     }
+}
+void BalanceAfterDelete(TNode*& root, bool shorter){
+	if(shorter == true)//co xoa
+		//duyet tu phan tu ke cuoi (do phan tu cuoi da xoa) cap nhat lai BalFactor va can bang lai (neu can)
+		for(int i = visitedNode.size() - 2; i >= 0; i--){
+			if(HighTree(visitedNode[i]->pLeft) == HighTree(visitedNode[i]->pRight))	visitedNode[i]->balFactor = EH;
+			else{
+				if(HighTree(visitedNode[i]->pLeft) > HighTree(visitedNode[i]->pRight))	visitedNode[i]->balFactor = LH;
+				else	visitedNode[i]->balFactor = RH;
+			}
+			if(abs(HighTree(visitedNode[i]->pLeft) - HighTree(visitedNode[i]->pRight)) >= 2)//cay mat can bang
+				if(visitedNode[i]->balFactor == LH)
+					if(visitedNode[i]->pLeft->balFactor == LH)
+						LL(visitedNode[i]);
+					else
+						if(visitedNode[i]->pLeft->balFactor == RH)	LR(visitedNode[i]);
+				else
+					if(visitedNode[i]->balFactor == RH){
+						if(visitedNode[i]->pRight->balFactor == RH)
+							RR(visitedNode[i]);
+						else
+							if(visitedNode[i]->pRight->balFactor == LH)	RL(visitedNode[i]);
+					}
+		}	
 }
 TNode* SearchNode(TNode* root, ElementType x) {
     TNode* p = root;
@@ -492,30 +547,58 @@ int main()
         }
     }*/
     InsertNode(root, CreateNode(1), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
     InsertNode(root, CreateNode(3), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
 
     InsertNode(root, CreateNode(0), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
 
     InsertNode(root, CreateNode(-5), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
     
     InsertNode(root, CreateNode(-1), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
 
     InsertNode(root, CreateNode(5), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
 
     InsertNode(root, CreateNode(10), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
 
     InsertNode(root, CreateNode(-15), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
+    
     InsertNode(root, CreateNode(50), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
    
     InsertNode(root, CreateNode(50), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
+    
     InsertNode(root, CreateNode(25), taller);
+    PrintTree(root);
+    cout<<"\n-------------------\n";
+    
     InsertNode(root, CreateNode(35), taller);
     
 
     PrintTree(root);
+    cout<<"\n-------------------\n";
     //DeleteNode(root, 11 );
     int n;
     cin >> n;
+    visitedNode.clear();
+    shorter = false;
     DeleteNode(root, n, shorter);
     PrintTree(root);
     cout << "\n";
