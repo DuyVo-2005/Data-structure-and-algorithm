@@ -36,7 +36,7 @@ bool IsEmptyTree(Node* T);
 void PrintTree_InOrder(Node* root);
 void ReadBinaryFile(wifstream &inFile);
 void ReplaceNode(Node*& p, Node*& T);
-wstring SplitStringBy(wstring s, char sep);
+Meaning SplitStringBy(wstring s, char sep);
 wstring TranslateEnglishMeaningToVietnameseMeaning(Node* root, wstring EnglishMeaning);
 
 int main()
@@ -219,6 +219,9 @@ void ReadBinaryFile(wifstream& inFile) {
 		// Đọc nội dung dòng
 		wstring line(length, L'\0');
 		inFile.read(&line[0], length);
+		Meaning newWord;
+		neword = SplitStringBy(line, L'-');
+		InsertNode(hashtable[newWord.EnglishMeaning], CreateNode(newWord));
 	}
 }
 void ReplaceNode(Node*& p, Node*& T) {
@@ -231,20 +234,21 @@ void ReplaceNode(Node*& p, Node*& T) {
         T = T->pRight;
     }
 }
-wstring SplitStringBy(wstring s, char sep) {
-	wstring res1 = L"", res2 = L"";
+Meaning SplitStringBy(wstring s, wchar sep) {
+	Meaning res;
+	res.EnglishMeaning = L"", res.VietnameseMeaning = L"";
 	int i = 0;
 	while (s[i] != sep)
 	{
-		res1 += s[i];
+		res.EnglishMeaning += s[i];
 		i++;
 	}
 	i++;// bỏ qua vị trí dấu phân cách
 	while (i < s.length()) {
-		res2 += s[i];
+		res.VietnameseMeaning += s[i];
 		i++;
 	}
-	return res1, res2;
+	return res;
 }
 wstring TranslateEnglishMeaningToVietnameseMeaning(Node* root, wstring EnglishMeaning) {
     Node* p = root;
