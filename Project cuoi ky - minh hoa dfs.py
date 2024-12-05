@@ -192,7 +192,7 @@ entry_start.grid(row=3, column=1)
 run_button = tk.Button(input_frame, text="Chạy DFS", command=run_dfs)
 run_button.grid(row=3, column=2)
 
-# Canvas vẽ đồ thị
+# Canvas vẽ vùng chứa đồ thị
 canvas = tk.Canvas(root, width=550, height=400, bg="white")
 canvas.pack()
 
@@ -206,7 +206,8 @@ result_text.pack()
 
 root.mainloop()
 """
-8 7
+so dinh: 8, so canh: 7
+cac canh
 1 2
 1 6
 2 3
