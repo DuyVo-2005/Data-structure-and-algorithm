@@ -1,4 +1,4 @@
-Near branch
+//Near branch
 #include<iostream>
 using namespace std;
 #define endl '\n'
