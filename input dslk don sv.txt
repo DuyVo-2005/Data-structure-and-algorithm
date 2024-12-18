@@ -1,0 +1,22 @@
+5
+23
+Khanh Duy
+9.6
+25
+Van A
+8.9
+27
+Thi C
+9.1
+11
+Van E
+9
+18
+Thanh H
+8.5
+16
+Van K
+9.2
+9
+9
+2
