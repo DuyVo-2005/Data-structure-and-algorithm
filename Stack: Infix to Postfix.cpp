@@ -68,47 +68,6 @@ int Pri(char opcode){//priority
 	if(opcode == '+' || opcode == '-')	return 3;
 	return 4;//* /
 }
-/*string InfixToPostfix(string infix){
-	STACK tmp;
-	InitStack(tmp);
-	string E1="";
-	for(int i=0;i<infix.length();i++){
-		if(infix[i]=='(')
-			Push(tmp,CreateNode('('));
-		else{
-			if(!IsOpcode(infix[i])){//infix[i] la toan hang
-				string tmpString = "";
-				while(i<infix.length()&&IsDigit(infix[i])){
-					tmpString += infix[i];//toan hang nhieu chu so
-					i++;
-				}
-				E1 += tmpString;
-				i--;//de xet lai lenh khong phai la so
-			}
-			else{//la opcode
-				goto label;
-				label:
-				if(Pri(tmp.pTop->Info)>=Pri(infix[i])){
-					E1+=Pop(tmp)->Info;
-					goto label;
-				}
-				else
-					Push(tmp,CreateNode(infix[i]));
-			}
-			goto label2;
-			label2:{
-			if(infix[i] == ')')
-				if(IsOpcode(tmp.pTop->Info)){
-					E1+=Pop(tmp)->Info;
-					goto label2;
-				}
-			}
-			if(tmp.pTop->Info=='(')	Pop(tmp);
-		}
-	}
-	while(tmp.pTop!=NULL)	E1+=Pop(tmp)->Info;
-	return E1;
-}*/
 string InfixToPostfix(string infix) {
     STACK tmp;
     InitStack(tmp);
@@ -166,4 +125,4 @@ int main()
    cout<<InfixToPostfix(algebraicExpression);
    return 0;
 }
-//(2*3+8/2)*(5-1)
+//(2*13+8/12)*(5-1)
