@@ -33,13 +33,13 @@ Ta có thể thấy ngay những tính chất sau bằng phép chứng minh quy 
 - Cây nhị phân hoàn chỉnh có n nút thì chiều cao của nó là h = ⎣lg(n)⎦ + 1.
 # 3. BIỂU DIỄN CÂY NHỊ PHÂN
 ## 3.1. Biểu diễn bằng mảng
--Cây nhị phân đầy đủ: dễ dàng đánh số cho các nút trên cây đó theo thứ tự lần lượt từ mức 1 trở đi, hết mức này đến mức khác và từ trái sang phải đối với các nút ở mỗi mức.
+- Cây nhị phân đầy đủ: dễ dàng đánh số cho các nút trên cây đó theo thứ tự lần lượt từ mức 1 trở đi, hết mức này đến mức khác và từ trái sang phải đối với các nút ở mỗi mức.
 Với cách đánh số này, con của nút thứ i sẽ là các nút thứ 2i và 2i + 1. Cha của nút thứ j là nút j div 2. Từ đó có thể lưu trữ cây bằng một mảng T, nút thứ i của cây được lưu trữ bằng phần tử T[i].
 - Cây nhị phân không đầy đủ: ta có thể thêm vào một số nút giả để được cây 
 nhị phân đầy đủ, và gán những giá trị đặc biệt cho những phần tử trong mảng T tương ứng với 
 những nút này (lãng phí bộ nhớ lưu trữ).
 ## 3.2. Biểu diễn bằng cấu trúc liên kết
-mỗi nút của cây là một bản ghi (record) gồm 3 trường: 
+Mỗi nút của cây là một bản ghi (record) gồm 3 trường: 
 
 - Trường Info: Chứa giá trị lưu tại nút đó 
 
@@ -61,8 +61,7 @@ Giá trị trong mỗi nút bất kỳ sẽ được liệt kê sau giá trị l
 # 5. CÂY K_PHÂN 
 Cây K_phân là một dạng cấu trúc cây mà mỗi nút trên cây có tối đa K nút con (có tính đến thứ tự của các nút con).
 ## 5.1 Biểu diễn cây K_phân bằng mảng
-Có thể thêm vào cây K_phân một số nút giả để cho mỗi nút nhánh của cây K_phân đều có đúng K nút con, các nút con được xếp 
-thứ tự từ nút con thứ nhất tới nút con thứ K, sau đó đánh số các nút trên cây K_phân bắt đầu từ 0 trở đi, bắt đầu từ mức 1, hết mức này đến mức khác và từ "trái qua phải" ở mỗi mức. Nút con thứ j của nút i là: i * K + j. Nút cha của nút x là nút (x - 1) div K. Ta có thể dùng một mảng T đánh số từ 0 để lưu các giá trị trên các nút: Giá trị tại nút thứ i được lưu trữ ở phần tử T[i].
+Có thể thêm vào cây K_phân một số nút giả để cho mỗi nút nhánh của cây K_phân đều có đúng K nút con, các nút con được xếp thứ tự từ nút con thứ nhất tới nút con thứ K, sau đó đánh số các nút trên cây K_phân bắt đầu từ 0 trở đi, bắt đầu từ mức 1, hết mức này đến mức khác và từ "trái qua phải" ở mỗi mức. Nút con thứ j của nút i là: i * K + j. Nút cha của nút x là nút (x - 1) div K. Ta có thể dùng một mảng T đánh số từ 0 để lưu các giá trị trên các nút: Giá trị tại nút thứ i được lưu trữ ở phần tử T[i].
 ## 5.2 Biểu diễn cây K_phân bằng cấu trúc liên kết
 Mỗi nút của cây là một bản ghi (record) gồm hai trường:
 - Trường Info: Chứa giá trị lưu trong nút đó.
@@ -72,14 +71,13 @@ con thứ i, trong trường hợp không có nút con thứ i thì Links[i] đ�
 kết có thể đi tới mọi nút khác.
 # 6. CÂY TỔNG QUÁT
 ## 6.1. Biểu diễn cây tổng quát bằng mảng
-Đánh số các nút trên cây bắt đầu từ 1 theo 
-một thứ tự tuỳ ý. Giả sử cây có n nút thì ta sử dụng: 
+Đánh số các nút trên cây bắt đầu từ 1 theo một thứ tự tuỳ ý. Giả sử cây có n nút thì ta sử dụng: 
 - Một mảng Info[1..n], trong đó Info[i] là giá trị lưu trong nút thứ i.
 - Một mảng Children được chia làm n đoạn, đoạn thứ i gồm một dãy liên tiếp các phần tử là chỉ số các nút con của nút i. Như vậy mảng Children sẽ chứa tất cả chỉ số của mọi nút con trên cây (ngoại trừ nút gốc) nên nó sẽ gồm n - 1 phần tử, lưu ý rằng khi chia mảng Children làm n đoạn thì sẽ có những đoạn rỗng (tương ứng với danh sách các nút con của một nút lá)
 - Một mảng Head[1..n + 1], để đánh dấu vị trí cắt đoạn trong mảng Children: Head[i] là vịtrí đứng liền trước đoạn thứ i, hay nói cách khác: Đoạn con tính từ chỉ số Head[i] + 1 đến Head[i] của mảng Children chứa chỉ số các nút con của nút thứ i. Khi Head[i] = Head[i+1] có nghĩa là đoạn thứ i rỗng. Quy ước: Head[n+1] = n - 1.
 - Một biến lưu chỉ số của nút gốc.
 ## 6.2. Lưu trữ cây tổng quát bằng cấu trúc liên kết
-mỗi nút là một bản ghi (record) gồm ba 
+Mỗi nút là một bản ghi (record) gồm ba 
 trường: 
 
 - Trường Info: Chứa giá trị lưu trong nút đó. 
