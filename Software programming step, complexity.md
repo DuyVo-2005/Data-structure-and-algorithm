@@ -31,8 +31,8 @@ một giải thuật đó, g(n) là một hàm xác định dương với mọi 
 - Tính phản xạ (ký pháp lớn)
 - Tính đối xứng (chỉ theta lớn)
 - Tính hoá vị đối xứng
-\+ f(n) = O(g(n)) nếu và chỉ nếu g(n) = Ω(f(n)).
-\+ f(n) = o(g(n)) nếu và chỉ nếu g(n) = ω(f(n)).
+ \+ f(n) = O(g(n)) nếu và chỉ nếu g(n) = Ω(f(n)).
+ \+ f(n) = o(g(n)) nếu và chỉ nếu g(n) = ω(f(n)).
 > Để dễ nhớ ta coi các ký pháp Ο, Ω, Θ, ο, ω lần lượt tương ứng với các phép so sánh ≤, ≥, =, <, >. Từ đó suy ra các tính chất trên.
 # XÁC ĐỊNH ĐỘ PHỨC TẠP TÍNH TOÁN CỦA GIẢI THUẬT
 - Qui tắc bỏ hằng số
